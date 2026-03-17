@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: StarkDistribuidos
+  
+  # Configuración de H2 Database
+  datasource:
+    url: jdbc:h2:mem:starkdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  # Configuración JPA/Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  
+  # Configuración de Mail (para notificaciones)
+  mail:
+    host: localhost
+    port: 1025
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+  
+  # Configuración de WebSocket
+  websocket:
+    allowed-origins: http://localhost:8080
+
+# Configuración de Logging
+logging:
+  level:
+    root: INFO
+    com.distribuidos.stark: DEBUG
+  pattern:
+    console: '%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n'
+
+# Configuración de Actuator (Monitorización)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,threaddump
+  endpoint:
+    health:
+      show-details: always
+
+# Configuración del servidor
+server:
+  port: 8080
+  servlet:
+    context-path: /stark-security
+
