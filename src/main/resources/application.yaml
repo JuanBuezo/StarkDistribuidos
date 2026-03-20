@@ -2,12 +2,16 @@ spring:
   application:
     name: StarkDistribuidos
   
-  # Configuración de H2 Database
+  # Configuración de DataSource (H2 por defecto, PostgreSQL en producción)
   datasource:
     url: jdbc:h2:mem:starkdb
     driverClassName: org.h2.Driver
     username: sa
     password: ''
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
   
   h2:
     console:
@@ -19,13 +23,17 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
   
-  # Configuración de Mail (para notificaciones)
+  # Configuración de Mail
   mail:
     host: localhost
     port: 1025
@@ -37,10 +45,6 @@ spring:
           auth: false
           starttls:
             enable: false
-  
-  # Configuración de WebSocket
-  websocket:
-    allowed-origins: http://localhost:8080
 
 # Configuración de Logging
 logging:
@@ -65,4 +69,114 @@ server:
   port: 8080
   servlet:
     context-path: /stark-security
+  compression:
+    enabled: true
+    min-response-size: 1024
+
+# Configuración de aplicación custom
+app:
+  email:
+    from: seguridad@starkindustries.com
+    admin: admin@starkindustries.com
+
+---
+
+# PERFIL: PRODUCCIÓN
+spring:
+  config:
+    activate:
+      on-profile: production
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stark_security_db
+    driverClassName: org.postgresql.Driver
+    username: stark_user
+    password: ${DB_PASSWORD:stark_secure_password}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 50
+  
+  mail:
+    host: ${MAIL_HOST:mail.starkindustries.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+logging:
+  level:
+    root: WARN
+    com.distribuidos.stark: INFO
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  file:
+    name: logs/stark-app.log
+    max-size: 10MB
+    max-history: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    min-response-size: 2048
+
+---
+
+# PERFIL: DOCKER
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://postgres:5432/stark_security_db
+    driverClassName: org.postgresql.Driver
+    username: stark_user
+    password: stark_secure_password_123
+  
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: update
+  
+  mail:
+    host: mailhog
+    port: 1025
+    username: test
+    password: test
+
+logging:
+  level:
+    root: INFO
+    com.distribuidos.stark: INFO
+
+server:
+  port: 8080
 

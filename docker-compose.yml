@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Base de Datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: stark-postgres
+    environment:
+      POSTGRES_USER: stark_user
+      POSTGRES_PASSWORD: stark_secure_password_123
+      POSTGRES_DB: stark_security_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - stark_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stark_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mailhog para pruebas de email
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: stark-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - stark_network
+
+  # Aplicación Spring Boot
+  stark-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stark-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/stark_security_db
+      SPRING_DATASOURCE_USERNAME: stark_user
+      SPRING_DATASOURCE_PASSWORD: stark_secure_password_123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: false
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
+      SERVER_PORT: 8080
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,threaddump
+      LOGGING_LEVEL_COM_DISTRIBUIDOS_STARK: INFO
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    networks:
+      - stark_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/stark-security/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # pgAdmin para gestión de base de datos
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: stark-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@starkindustries.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    networks:
+      - stark_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  stark_network:
+    driver: bridge
+
