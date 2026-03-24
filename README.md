@@ -1,26 +1,26 @@
-# 🏢 Stark Industries Security System
+# 🏢 Stark Industries - Sistema de Seguridad Distribuido
 
-## Sistema de Seguridad Distribuido con Monitoreo en Tiempo Real
+## Microservicios con Spring Cloud
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.3-brightgreen)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2023.0.1-blue)
 ![Docker](https://img.shields.io/badge/Docker-Supported-cyan)
-![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## 📋 Descripción
+## 📌 Descripción
 
-Sistema completo de seguridad distribuido basado en Spring Boot que gestiona:
+Sistema completo de seguridad basado en **microservicios distribuidos**:
 
-- 🎯 **Sensores en Tiempo Real** - Monitoreo continuo de movimiento, temperatura y acceso
-- 🚨 **Alertas Inteligentes** - Generación y notificación inmediata de incidentes
-- 🔒 **Control de Acceso** - Autorización basada en roles y auditoría completa
-- 📱 **WebSocket** - Notificaciones en tiempo real a múltiples clientes
-- 📧 **Notificaciones Email** - Alertas críticas enviadas automáticamente
-- 🔄 **Procesamiento Asincrónico** - Manejo concurrente de múltiples sensores
-- 📊 **Monitorización** - Métricas y estado del sistema en tiempo real
+- ✅ **Architecture**: 7 microservicios independientes
+- ✅ **Service Discovery**: Netflix Eureka (Auto-registro)
+- ✅ **API Gateway**: Spring Cloud Gateway (Load balancing)
+- ✅ **Autenticación**: JWT + Spring Security
+- ✅ **Tiempo Real**: WebSocket + STOMP
+- ✅ **Notificaciones**: Email asincrónico
+- ✅ **Monitorización**: Spring Actuator
+- ✅ **Containerización**: Docker & Docker Compose
 
 ---
 
@@ -29,25 +29,25 @@ Sistema completo de seguridad distribuido basado en Spring Boot que gestiona:
 ### Requisitos
 - Java 17+
 - Maven 3.9+
-- Docker & Docker Compose (opcional)
+- Docker & Docker Compose
 
-### Opción 1: Desarrollo Local
+### Ejecución con Docker (Recomendado)
 
 ```bash
-# Clonar o navegar al proyecto
-cd StarkDistribuidos
+# Compilar todos los módulos
+mvn clean install
 
-# Compilar
-mvn clean compile
+# Iniciar servicios
+docker-compose up -d
 
-# Ejecutar
-mvn spring-boot:run
+# Verificar
+docker-compose ps
 ```
 
 **Acceso:**
-- API: http://localhost:8080/stark-security/
-- Consola H2: http://localhost:8080/stark-security/h2-console
-- Health: http://localhost:8080/stark-security/actuator/health
+- API Gateway: http://localhost:8080/stark
+- Eureka Dashboard: http://localhost:8761/eureka
+- Usuario: admin / admin123
 
 **Credenciales:**
 - Usuario: `admin`

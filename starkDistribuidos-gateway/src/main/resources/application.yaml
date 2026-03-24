@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: stark-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: sensor-service
+          uri: lb://stark-sensor
+          predicates:
+            - Path=/api/sensors/**
+        - id: alert-service
+          uri: lb://stark-alert
+          predicates:
+            - Path=/api/alerts/**
+        - id: access-service
+          uri: lb://stark-access
+          predicates:
+            - Path=/api/access/**
+        - id: notification-service
+          uri: lb://stark-notification
+          predicates:
+            - Path=/api/notifications/**
+        - id: auth-service
+          uri: lb://stark-auth
+          predicates:
+            - Path=/api/auth/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8080
+

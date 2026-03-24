@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: stark-sensor
+  datasource:
+    url: jdbc:h2:mem:sensordb
+  jpa:
+    hibernate:
+      ddl-auto: update
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8082
+
