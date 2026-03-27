@@ -25,6 +25,7 @@
         <module>starkDistribuidos-access</module>
         <module>starkDistribuidos-notification</module>
         <module>starkDistribuidos-config</module>
+        <module>starkDistribuidos-frontend</module>
     </modules>
 
     <dependencyManagement>

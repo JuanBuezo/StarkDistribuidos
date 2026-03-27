@@ -14,12 +14,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Configuración de Spring Security para el sistema de seguridad de Stark Industries.
- * 
- * Define:
- * - Autenticación de usuarios
- * - Control de acceso basado en roles
- * - Encriptación de contraseñas
+ * Configuración de Spring Security para el frontend
  */
 @Configuration
 @EnableWebSecurity
@@ -27,31 +22,25 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     /**
-     * Configura la cadena de filtros de seguridad HTTP.
+     * Configura la cadena de filtros de seguridad HTTP
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/stark-security/public/**").permitAll()
-                // Permitir acceso a archivos estáticos sin autenticación
+                // Recursos estáticos sin autenticación
                 .requestMatchers("/stark-security/", "/stark-security/index.html").permitAll()
                 .requestMatchers("/stark-security/static/**").permitAll()
                 .requestMatchers("/stark-security/js/**").permitAll()
                 .requestMatchers("/stark-security/styles/**").permitAll()
                 .requestMatchers("/stark-security/images/**").permitAll()
                 .requestMatchers("/stark-security/css/**").permitAll()
-                // WebSocket para notificaciones
+                // WebSocket sin autenticación (será proxeado por gateway)
                 .requestMatchers("/stark-security/ws/**").permitAll()
-                // Endpoints de sistema sin autenticación
-                .requestMatchers("/stark-security/api/system/health").permitAll()
-                .requestMatchers("/stark-security/api/system/status").permitAll()
-                // Endpoints protegidos
-                .requestMatchers("/stark-security/api/sensors/**").hasAnyRole("ADMIN", "SECURITY")
-                .requestMatchers("/stark-security/api/alerts/**").hasAnyRole("ADMIN", "SECURITY")
-                .requestMatchers("/stark-security/api/access/**").hasAnyRole("ADMIN", "SECURITY", "USER")
+                // Health check sin autenticación
+                .requestMatchers("/actuator/health").permitAll()
+                // Todo lo demás requiere autenticación
                 .anyRequest().authenticated()
             )
             .httpBasic(basic -> {})
@@ -63,8 +52,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Define usuarios en memoria para desarrollo.
-     * En producción, estos vendrían de una base de datos.
+     * Define usuarios en memoria para desarrollo
      */
     @Bean
     public UserDetailsService userDetailsService() {
@@ -90,7 +78,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Configura el codificador de contraseñas usando BCrypt.
+     * Configura el codificador de contraseñas
      */
     @Bean
     public PasswordEncoder passwordEncoder() {

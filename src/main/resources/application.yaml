@@ -72,6 +72,26 @@ server:
   compression:
     enabled: true
     min-response-size: 1024
+  http2:
+    enabled: true
+  forward-headers-strategy: framework
+
+# Configuración de recursos estáticos
+spring:
+  web:
+    resources:
+      cache:
+        period: 31536000
+        cachecontrol:
+          max-age: 31536000
+          public: true
+      static-locations:
+        - classpath:/static/
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /stark-security/static/**
 
 # Configuración de aplicación custom
 app:

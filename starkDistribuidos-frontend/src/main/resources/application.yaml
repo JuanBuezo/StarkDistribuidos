@@ -1,0 +1,112 @@
+spring:
+  application:
+    name: stark-frontend
+    
+  # Configuración de DataSource
+  datasource:
+    url: jdbc:h2:mem:starkdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  # Configuración JPA
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  
+  # Configuración de recursos estáticos
+  web:
+    resources:
+      cache:
+        period: 31536000
+        cachecontrol:
+          max-age: 31536000
+          public: true
+
+# Configuración del servidor
+server:
+  port: 8085
+  servlet:
+    context-path: /stark-security
+  compression:
+    enabled: true
+    min-response-size: 1024
+  http2:
+    enabled: true
+
+# Configuración de Logging
+logging:
+  level:
+    root: INFO
+    com.distribuidos.stark: DEBUG
+  pattern:
+    console: '%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n'
+
+# Eureka Client
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+---
+
+# PERFIL: PRODUCCIÓN
+spring:
+  config:
+    activate:
+      on-profile: production
+      
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stark_frontend_db
+    driverClassName: org.postgresql.Driver
+    username: stark_user
+    password: ${DB_PASSWORD:stark_secure_password}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+server:
+  port: 8085
+  servlet:
+    context-path: /stark-security
+  compression:
+    enabled: true
+    min-response-size: 1024
+  http2:
+    enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+
