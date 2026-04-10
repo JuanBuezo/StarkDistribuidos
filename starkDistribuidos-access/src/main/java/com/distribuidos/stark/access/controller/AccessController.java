@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/access")
+@RequestMapping("/api/access")
 @CrossOrigin(origins = "*")
 public class AccessController {
     @GetMapping

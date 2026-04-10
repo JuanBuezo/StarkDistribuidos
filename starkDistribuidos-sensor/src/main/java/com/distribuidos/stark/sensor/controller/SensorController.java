@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sensors")
+@RequestMapping("/api/sensors")
 @CrossOrigin(origins = "*")
 public class SensorController {
     @GetMapping
