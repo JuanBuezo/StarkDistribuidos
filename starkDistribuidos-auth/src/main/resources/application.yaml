@@ -7,6 +7,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  # --- SEGURIDAD CONFIGURADA CORRECTAMENTE ---
+  security:
+    user:
+      name: admin
+      password: admin123
 
 eureka:
   client:
@@ -21,4 +26,4 @@ server:
 jwt:
   secret: StarkIndustriesSecuritySystemJWTSecretKeyForMicroservices2024
   expiration: 86400000
-
+  
