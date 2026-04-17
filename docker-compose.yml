@@ -1,126 +1,259 @@
 version: '3.9'
 
 services:
-  eureka-server:
-    image: openjdk:17-jdk-slim
-    container_name: stark-eureka
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-config/target/stark-config-0.0.1-SNAPSHOT.jar:/app/eureka.jar
-    ports:
-      - "8761:8761"
+  # ✅ PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: stark-postgres
     environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar eureka.jar
+      POSTGRES_DB: ${DB_NAME:-stark_security_db}
+      POSTGRES_USER: ${DB_USER:-stark_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-stark_secure_password_123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
     networks:
       - stark-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/eureka/apps"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-stark_user}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
-  api-gateway:
-    image: openjdk:17-jdk-slim
-    container_name: stark-gateway
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-gateway/target/stark-gateway-0.0.1-SNAPSHOT.jar:/app/gateway.jar
-    ports:
-      - "8080:8080"
+  # ✅ Eureka Config Server
+  config-server:
+    build:
+      context: .
+      dockerfile: starkDistribuidos-config/Dockerfile
+    container_name: stark-config-server
     environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar gateway.jar
-    depends_on:
-      eureka-server:
-        condition: service_healthy
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
+    ports:
+      - "8761:8761"
     networks:
       - stark-network
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
+  # ✅ Auth Service
   auth-service:
-    image: openjdk:17-jdk-slim
-    container_name: stark-auth
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-auth/target/stark-auth-0.0.1-SNAPSHOT.jar:/app/auth.jar
+    build:
+      context: .
+      dockerfile: starkDistribuidos-auth/Dockerfile
+    container_name: stark-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-stark_security_db}
+      DB_USER: ${DB_USER:-stark_user}
+      DB_PASSWORD: ${DB_PASSWORD:-stark_secure_password_123}
+      SECURITY_USER_NAME: ${SECURITY_USER_NAME:-admin}
+      SECURITY_USER_PASSWORD: ${SECURITY_USER_PASSWORD:-Admin@Secure2024!}
+      JWT_SECRET: ${JWT_SECRET:-StarkIndustriesSecuritySystemJWTSecretKeyForMicroservices2024}
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
     ports:
       - "8081:8081"
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar auth.jar
-    depends_on:
-      eureka-server:
-        condition: service_healthy
     networks:
       - stark-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
+  # ✅ API Gateway
+  gateway:
+    build:
+      context: .
+      dockerfile: starkDistribuidos-gateway/Dockerfile
+    container_name: stark-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
+    ports:
+      - "8080:8080"
+    networks:
+      - stark-network
+    depends_on:
+      - auth-service
+      - config-server
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # ✅ Sensor Service
   sensor-service:
-    image: openjdk:17-jdk-slim
-    container_name: stark-sensor
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-sensor/target/stark-sensor-0.0.1-SNAPSHOT.jar:/app/sensor.jar
+    build:
+      context: .
+      dockerfile: starkDistribuidos-sensor/Dockerfile
+    container_name: stark-sensor-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-stark_security_db}
+      DB_USER: ${DB_USER:-stark_user}
+      DB_PASSWORD: ${DB_PASSWORD:-stark_secure_password_123}
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
     ports:
       - "8082:8082"
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar sensor.jar
-    depends_on:
-      eureka-server:
-        condition: service_healthy
     networks:
       - stark-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
+  # ✅ Alert Service
   alert-service:
-    image: openjdk:17-jdk-slim
-    container_name: stark-alert
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-alert/target/stark-alert-0.0.1-SNAPSHOT.jar:/app/alert.jar
+    build:
+      context: .
+      dockerfile: starkDistribuidos-alert/Dockerfile
+    container_name: stark-alert-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-stark_security_db}
+      DB_USER: ${DB_USER:-stark_user}
+      DB_PASSWORD: ${DB_PASSWORD:-stark_secure_password_123}
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
     ports:
       - "8083:8083"
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar alert.jar
-    depends_on:
-      eureka-server:
-        condition: service_healthy
     networks:
       - stark-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
+  # ✅ Access Control Service
   access-service:
-    image: openjdk:17-jdk-slim
-    container_name: stark-access
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-access/target/stark-access-0.0.1-SNAPSHOT.jar:/app/access.jar
+    build:
+      context: .
+      dockerfile: starkDistribuidos-access/Dockerfile
+    container_name: stark-access-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-stark_security_db}
+      DB_USER: ${DB_USER:-stark_user}
+      DB_PASSWORD: ${DB_PASSWORD:-stark_secure_password_123}
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
     ports:
       - "8084:8084"
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar access.jar
-    depends_on:
-      eureka-server:
-        condition: service_healthy
     networks:
       - stark-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
+  # ✅ Notification Service
   notification-service:
-    image: openjdk:17-jdk-slim
-    container_name: stark-notification
-    working_dir: /app
-    volumes:
-      - ./starkDistribuidos-notification/target/stark-notification-0.0.1-SNAPSHOT.jar:/app/notification.jar
+    build:
+      context: .
+      dockerfile: starkDistribuidos-notification/Dockerfile
+    container_name: stark-notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      MAIL_HOST: ${MAIL_HOST:-mailhog}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
     ports:
       - "8085:8085"
-    environment:
-      - JAVA_OPTS=-Xmx512m -Xms256m
-    command: java -jar notification.jar
-    depends_on:
-      eureka-server:
-        condition: service_healthy
     networks:
       - stark-network
+    depends_on:
+      - config-server
+      - mailhog
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # ✅ Frontend Service
+  frontend-service:
+    build:
+      context: .
+      dockerfile: starkDistribuidos-frontend/Dockerfile
+    container_name: stark-frontend-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-stark_security_db}
+      DB_USER: ${DB_USER:-stark_user}
+      DB_PASSWORD: ${DB_PASSWORD:-stark_secure_password_123}
+      SECURITY_USER_NAME: ${SECURITY_USER_NAME:-admin}
+      SECURITY_USER_PASSWORD: ${SECURITY_USER_PASSWORD:-Admin@Secure2024!}
+      EUREKA_USER: ${EUREKA_USER:-admin}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD:-Eureka@Secure2024!}
+    ports:
+      - "8086:8080"
+    networks:
+      - stark-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # ✅ MailHog for testing email
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: stark-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - stark-network
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  postgres_data:
+    driver: local
 
 networks:
   stark-network:

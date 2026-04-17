@@ -2,7 +2,7 @@ spring:
   application:
     name: StarkDistribuidos
   
-  # Configuración de DataSource (H2 por defecto, PostgreSQL en producción)
+  # ✅ SECURITY FIX: DataSource configuration with environment variables
   datasource:
     url: jdbc:h2:mem:starkdb
     driverClassName: org.h2.Driver
@@ -13,9 +13,10 @@ spring:
       minimum-idle: 5
       connection-timeout: 30000
   
+  # ✅ SECURITY FIX: H2 Console disabled by default
   h2:
     console:
-      enabled: true
+      enabled: ${H2_CONSOLE_ENABLED:false}
       path: /h2-console
   
   # Configuración JPA/Hibernate
