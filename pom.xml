@@ -24,6 +24,7 @@
     </properties>
 
     <modules>
+        <module>starkDistribuidos-common</module>
         <module>starkDistribuidos-gateway</module>
         <module>starkDistribuidos-auth</module>
         <module>starkDistribuidos-sensor</module>
@@ -55,16 +56,6 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
-            </dependency>
-            <!-- ✅ SDD ARCHITECTURE: RabbitMQ for point-to-point messaging -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-amqp</artifactId>
-            </dependency>
-            <!-- ✅ SDD ARCHITECTURE: Kafka for pub/sub events -->
-            <dependency>
-                <groupId>org.springframework.kafka</groupId>
-                <artifactId>spring-kafka</artifactId>
             </dependency>
             <!-- ✅ SDD ARCHITECTURE: Redis for distributed cache -->
             <dependency>
