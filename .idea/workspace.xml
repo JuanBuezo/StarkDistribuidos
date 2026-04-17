@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< Updated upstream
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b76d5baf-021f-4006-9be0-fc8b1bea871b" name="Changes" comment="" />
+=======
+  <component name="ChangeListManager">
+    <list default="true" id="ba16d098-0039-4cc0-8ba8-649e0bf53243" name="Changes" comment="" />
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< Updated upstream
   <component name="CopilotPersistence">
     <persistenceIdMap>
       <entry key="_C:/4ICAI/SISTEMAS DISTRIBUIDOS/STARK_DISTRIBUIDOS/StarkDistribuidos" value="3CTPVuCvdFbcDzDq2vXDjair0qb" />
@@ -44,6 +50,21 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1776406616363</updated>
+=======
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="3CTPBNQ4lA3LVfh9sbEEUKBYXJN" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ba16d098-0039-4cc0-8ba8-649e0bf53243" name="Changes" comment="" />
+      <created>1776406451326</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776406451326</updated>
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
