@@ -1,0 +1,129 @@
+version: '3.9'
+
+services:
+  eureka-server:
+    image: openjdk:17-jdk-slim
+    container_name: stark-eureka
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-config/target/stark-config-0.0.1-SNAPSHOT.jar:/app/eureka.jar
+    ports:
+      - "8761:8761"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar eureka.jar
+    networks:
+      - stark-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/eureka/apps"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    image: openjdk:17-jdk-slim
+    container_name: stark-gateway
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-gateway/target/stark-gateway-0.0.1-SNAPSHOT.jar:/app/gateway.jar
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar gateway.jar
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - stark-network
+
+  auth-service:
+    image: openjdk:17-jdk-slim
+    container_name: stark-auth
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-auth/target/stark-auth-0.0.1-SNAPSHOT.jar:/app/auth.jar
+    ports:
+      - "8081:8081"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar auth.jar
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - stark-network
+
+  sensor-service:
+    image: openjdk:17-jdk-slim
+    container_name: stark-sensor
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-sensor/target/stark-sensor-0.0.1-SNAPSHOT.jar:/app/sensor.jar
+    ports:
+      - "8082:8082"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar sensor.jar
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - stark-network
+
+  alert-service:
+    image: openjdk:17-jdk-slim
+    container_name: stark-alert
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-alert/target/stark-alert-0.0.1-SNAPSHOT.jar:/app/alert.jar
+    ports:
+      - "8083:8083"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar alert.jar
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - stark-network
+
+  access-service:
+    image: openjdk:17-jdk-slim
+    container_name: stark-access
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-access/target/stark-access-0.0.1-SNAPSHOT.jar:/app/access.jar
+    ports:
+      - "8084:8084"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar access.jar
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - stark-network
+
+  notification-service:
+    image: openjdk:17-jdk-slim
+    container_name: stark-notification
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-notification/target/stark-notification-0.0.1-SNAPSHOT.jar:/app/notification.jar
+    ports:
+      - "8085:8085"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    command: java -jar notification.jar
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - stark-network
+
+networks:
+  stark-network:
+    driver: bridge
+
+
