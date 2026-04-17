@@ -15,6 +15,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>3.2.5</spring-boot.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <!-- ✅ SECURITY FIX: H2 Database updated from 1.4.200 to 2.2.220 -->
+        <h2.version>2.2.220</h2.version>
+        <!-- ✅ SDD ARCHITECTURE: Message Brokers and Distributed Cache -->
+        <kafka.version>3.5.0</kafka.version>
+        <rabbitmq.version>6.0.0</rabbitmq.version>
+        <resilience4j.version>2.1.0</resilience4j.version>
     </properties>
 
     <modules>
@@ -49,6 +55,41 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+            </dependency>
+            <!-- ✅ SDD ARCHITECTURE: RabbitMQ for point-to-point messaging -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+            </dependency>
+            <!-- ✅ SDD ARCHITECTURE: Kafka for pub/sub events -->
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+            </dependency>
+            <!-- ✅ SDD ARCHITECTURE: Redis for distributed cache -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+            </dependency>
+            <!-- ✅ SDD ARCHITECTURE: Resilience4j for circuit breakers -->
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-spring-boot3</artifactId>
+                <version>${resilience4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-circuitbreaker</artifactId>
+                <version>${resilience4j.version}</version>
+            </dependency>
+            <!-- ✅ SDD ARCHITECTURE: Service Bus & Orchestration -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-bus</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-bus-amqp</artifactId>
             </dependency>
         </dependencies>
     </dependencyManagement>
