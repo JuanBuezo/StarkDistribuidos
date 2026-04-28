@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import com.distribuidos.stark.entity.Notification;
+import com.distribuidos.stark.repository.NotificationRepository;
+import java.time.LocalDateTime;
 
 /**
  * Servicio de notificaciones en tiempo real usando WebSocket.
@@ -17,31 +20,40 @@ import org.springframework.stereotype.Service;
 public class NotificationService {
     
     private final SimpMessagingTemplate messagingTemplate;
-    
+    private final NotificationRepository notificationRepository;
+
     @Async("alertExecutor")
     public void publishAlert(Alert alert) {
         log.debug("Publicando alerta por WebSocket: {}", alert.getId());
-        
+
         try {
             messagingTemplate.convertAndSend(
-                "/topic/alerts",
-                buildAlertMessage(alert)
+                    "/topic/alerts",
+                    buildAlertMessage(alert)
             );
+
+            saveNotification("ALERT", "/topic/alerts", alert.getMessage(), "SENT");
+
         } catch (Exception e) {
+            saveNotification("ALERT", "/topic/alerts", alert.getMessage(), "ERROR");
             log.error("Error al publicar alerta", e);
         }
     }
-    
+
     @Async("alertExecutor")
     public void publishAlertAcknowledged(Alert alert) {
         log.debug("Publicando reconocimiento de alerta: {}", alert.getId());
-        
+
         try {
             messagingTemplate.convertAndSend(
-                "/topic/alerts/acknowledged",
-                buildAlertMessage(alert)
+                    "/topic/alerts/acknowledged",
+                    buildAlertMessage(alert)
             );
+
+            saveNotification("ALERT_ACK", "/topic/alerts/acknowledged", alert.getMessage(), "SENT");
+
         } catch (Exception e) {
+            saveNotification("ALERT_ACK", "/topic/alerts/acknowledged", alert.getMessage(), "ERROR");
             log.error("Error al publicar reconocimiento", e);
         }
     }
@@ -130,6 +142,16 @@ public class NotificationService {
             .failureCount(sensor.getFailureCount())
             .timestamp(sensor.getUpdatedAt())
             .build();
+    }
+
+    private void saveNotification(String type, String destination, String message, String status) {
+        notificationRepository.save(Notification.builder()
+                .type(type)
+                .destination(destination)
+                .message(message)
+                .status(status)
+                .createdAt(LocalDateTime.now())
+                .build());
     }
     
     // DTOs para WebSocket

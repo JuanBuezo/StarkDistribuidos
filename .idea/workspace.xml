@@ -1,78 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-<<<<<<< Updated upstream
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b76d5baf-021f-4006-9be0-fc8b1bea871b" name="Changes" comment="" />
-=======
-  <component name="ChangeListManager">
-    <list default="true" id="ba16d098-0039-4cc0-8ba8-649e0bf53243" name="Changes" comment="" />
->>>>>>> Stashed changes
+    <list default="true" id="c45518ef-90a2-4d12-8b00-da4b06ace977" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/controller/NotificationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/entity/Notification.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/repository/NotificationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/StarkDistribuidos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENTS_CONFIGURATION_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DEPLOYMENT_COMPLETE_OVERVIEW.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EXECUTIVE_SUMMARY_4DAYS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GIT_COMMIT_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/INDEX_COMPLETE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/POC_API_EXAMPLES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/POC_VALIDATION_CHECKLIST.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/QUICK_START.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README_SECURITY_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_AUDIT_COMPLETE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_DAY1_COMPLETE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_DAY2_SDD_PROGRESS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_DAY3_AGENTS_COMPLETE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_DAY4_VALIDATION_DEPLOY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_DAY5_MONITORING_OPS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SECURITY_IMPLEMENTATION_CHECKLIST.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TESTING_AUDIT_REPORT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TESTING_VALIDATION_PHASE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USAGE_EXAMPLES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WEEK_SUMMARY_5DAYS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build_final.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build_fix.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/ARCHITECTURE_SDD_ANALYSIS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/CODE_EXAMPLES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/CONCLUSION_DEL_FIX.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/CONFIGURATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/DEPLOYMENT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/EUREKA_FIX_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND_MICROSERVICE_SETUP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND_QUICKSTART.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND_README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/FRONTEND_VERIFICATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/IMPLEMENTACION_COMPLETA.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/IMPLEMENTATION_CHECKLIST.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/IMPLEMENTATION_ROADMAP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/INDEX.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/INDEX_FRONTEND.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/INVENTORY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/PASOS_EXACTOS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/QUICKSTART.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/QUICK_START_FIXED.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README_ESPAÑOL.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README_FIX_EUREKA_401.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README_SECURITY_AUDIT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/RESUMEN_EJECUTIVO.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/RESUMEN_VISUAL.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SECURITY_AUDIT_INDEX.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SECURITY_AUDIT_REPORT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SECURITY_EXECUTIVE_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SECURITY_FIXES_IMPLEMENTATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SECURITY_TESTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/START_HERE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/STEP_BY_STEP_START.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TECHNICAL_ANALYSIS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TROUBLESHOOTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/VERIFICATION_CHECKLIST.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid32792.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/replay_pid32792.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/agent/ServiceAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/agent/ServiceAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/controller/AlertController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/controller/AlertController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/entity/Alert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/entity/Alert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/service/AlertService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/service/AlertService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/distribuidos/stark/service/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-access/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-access/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-access/src/main/java/com/distribuidos/stark/access/AccessServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-access/src/main/java/com/distribuidos/stark/access/controller/AccessController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-access/src/main/java/com/distribuidos/stark/starkDistribuidos_access/agent/AccessControlAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-access/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-alert/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-alert/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-alert/src/main/java/com/distribuidos/stark/alert/AlertServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-alert/src/main/java/com/distribuidos/stark/alert/controller/AlertController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-alert/src/main/java/com/distribuidos/stark/starkDistribuidos_alert/agent/AlertAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-alert/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-auth/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-auth/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-auth/src/main/java/com/distribuidos/stark/auth/AuthServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-auth/src/main/java/com/distribuidos/stark/auth/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-auth/src/main/java/com/distribuidos/stark/starkDistribuidos_auth/agent/AuthAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-auth/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-common/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-common/src/main/java/com/distribuidos/stark/agent/ServiceAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-config/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-config/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-config/src/main/java/com/distribuidos/stark/config/EurekaServerApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-config/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/QUICKSTART.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/java/com/distribuidos/stark/StarkFrontendApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/java/com/distribuidos/stark/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/java/com/distribuidos/stark/config/WebConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/java/com/distribuidos/stark/controller/FrontendController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/static/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/static/js/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/static/js/auth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/static/js/dashboard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/static/js/websocket.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-frontend/src/main/resources/static/styles/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-gateway/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-gateway/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-gateway/src/main/java/com/distribuidos/stark/gateway/GatewayApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-gateway/src/main/java/com/distribuidos/stark/gateway/GatewayController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-gateway/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-notification/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-notification/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-notification/src/main/java/com/distribuidos/stark/starkDistribuidos_notification/agent/NotificationAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-notification/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-sensor/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-sensor/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-sensor/src/main/java/com/distribuidos/stark/sensor/SensorServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-sensor/src/main/java/com/distribuidos/stark/sensor/controller/SensorController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-sensor/src/main/java/com/distribuidos/stark/starkDistribuidos_sensor/agent/SensorAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/starkDistribuidos-sensor/src/main/resources/application.yaml" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-<<<<<<< Updated upstream
   <component name="CopilotPersistence">
     <persistenceIdMap>
-      <entry key="_C:/4ICAI/SISTEMAS DISTRIBUIDOS/STARK_DISTRIBUIDOS/StarkDistribuidos" value="3CTPVuCvdFbcDzDq2vXDjair0qb" />
+      <entry key="_C:/4ICAI/SISTEMAS DISTRIBUIDOS/STARK_DISTRIBUIDOS/StarkDistribuidos" value="3Czawj8oQluq5q4TipRfNyDCG0e" />
     </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="193" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="3CTPVuCvdFbcDzDq2vXDjair0qb" />
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "pedromaarcos"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/JuanBuezo/StarkDistribuidos.git",
+    "accountId": "4dd9678e-21f6-4866-b537-cf801235e20d"
+  }
+}]]></component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="3Czawj8oQluq5q4TipRfNyDCG0e" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Rama__Pedro&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "Rama__Pedro",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MavenSettings"
   }
-}</component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
-  <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="b76d5baf-021f-4006-9be0-fc8b1bea871b" name="Changes" comment="" />
-      <created>1776406616363</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1776406616363</updated>
-=======
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 8
 }]]></component>
-  <component name="ProjectId" id="3CTPBNQ4lA3LVfh9sbEEUKBYXJN" />
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ba16d098-0039-4cc0-8ba8-649e0bf53243" name="Changes" comment="" />
-      <created>1776406451326</created>
+      <changelist id="c45518ef-90a2-4d12-8b00-da4b06ace977" name="Changes" comment="" />
+      <created>1777391094717</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1776406451326</updated>
->>>>>>> Stashed changes
+      <updated>1777391094717</updated>
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
       <option value=".github/instructions" />
+      <option value=".github/instructions" />
     </instructionFileLocations>
     <promptFileLocations>
+      <option value=".github/prompts" />
       <option value=".github/prompts" />
     </promptFileLocations>
   </component>

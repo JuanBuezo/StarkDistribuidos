@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.distribuidos.stark.repository.SensorRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class AlertService {
     private final AlertRepository alertRepository;
     private final NotificationService notificationService;
     private final EmailService emailService;
+    private final SensorRepository sensorRepository;
     
     public List<Alert> getAllAlerts() {
         log.info("Obteniendo todas las alertas");
@@ -83,17 +85,24 @@ public class AlertService {
         // Notificar inmediatamente
         notifyAlert(savedAlert);
     }
-    
+
     @Transactional
-    @Async("alertExecutor")
-    public void createAlert(Alert alert) {
+    public Alert createAlert(Alert alert) {
         log.warn("Creando alerta: {}", alert.getMessage());
-        
+
+        Long sensorId = alert.getSensor().getId();
+
+        Sensor sensor = sensorRepository.findById(sensorId)
+                .orElseThrow(() -> new RuntimeException("Sensor no encontrado: " + sensorId));
+
+        alert.setSensor(sensor);
+
         Alert savedAlert = alertRepository.save(alert);
         log.info("Alerta creada con ID: {}", savedAlert.getId());
-        
-        // Notificar
+
         notifyAlert(savedAlert);
+
+        return savedAlert;
     }
     
     @Transactional

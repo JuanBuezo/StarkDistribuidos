@@ -4,7 +4,7 @@ spring:
   
   # ✅ SECURITY FIX: DataSource configuration with environment variables
   datasource:
-    url: jdbc:h2:mem:starkdb
+    url: jdbc:h2:file:./data/stark_db
     driverClassName: org.h2.Driver
     username: sa
     password: ''
@@ -23,7 +23,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
@@ -46,6 +46,20 @@ spring:
           auth: false
           starttls:
             enable: false
+  web:
+    resources:
+      cache:
+        period: 31536000
+        cachecontrol:
+          max-age: 31536000
+          public: true
+      static-locations:
+        - classpath:/static/
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /stark-security/static/**
 
 # Configuración de Logging
 logging:
@@ -77,22 +91,7 @@ server:
     enabled: true
   forward-headers-strategy: framework
 
-# Configuración de recursos estáticos
-spring:
-  web:
-    resources:
-      cache:
-        period: 31536000
-        cachecontrol:
-          max-age: 31536000
-          public: true
-      static-locations:
-        - classpath:/static/
-      chain:
-        strategy:
-          content:
-            enabled: true
-            paths: /stark-security/static/**
+
 
 # Configuración de aplicación custom
 app:

@@ -72,12 +72,12 @@ public class AlertController {
             Pageable pageable) {
         return ResponseEntity.ok(Page.empty());
     }
-    
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SECURITY')")
     public ResponseEntity<Alert> createAlert(@Valid @RequestBody Alert alert) {
-        alertService.createAlert(alert);
-        return ResponseEntity.status(HttpStatus.CREATED).body(alert);
+        Alert savedAlert = alertService.createAlert(alert);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAlert);
     }
     
     @PutMapping("/{id}/acknowledge")

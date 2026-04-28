@@ -94,7 +94,7 @@ public abstract class ServiceAgent {
         } catch (Exception e) {
             log.error("❌ Error processing command: {}", e.getMessage());
             recordAudit(command.getCommandId(), "COMMAND_FAILED", e.getMessage());
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 

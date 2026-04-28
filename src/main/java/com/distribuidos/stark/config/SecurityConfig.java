@@ -40,10 +40,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // ✅ SECURITY FIX: CSRF Protection enabled
-            .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers("/h2-console/**", "/actuator/**")
-            )
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers(
+                                "/h2-console/**",
+                                "/actuator/**",
+                                "/stark-security/api/**",
+                                "/stark-security/stark-security/api/**"
+                        )
+                )
             // ✅ SECURITY FIX: CORS Configuration
             .cors(cors -> cors.configurationSource(
                 request -> {
@@ -84,16 +89,8 @@ public class SecurityConfig {
             .httpBasic(basic -> {})
             // ✅ SECURITY FIX: Enhanced Security Headers
             .headers(headers -> headers
-                // ✅ SECURITY FIX: Frame options set to SAMEORIGIN (was disabled)
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
-                // ✅ SECURITY FIX: XSS Protection
-                .xssProtection()
-                .and()
-                // ✅ SECURITY FIX: Content Security Policy
                 .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
-                .and()
-                // ✅ SECURITY FIX: Prevent MIME type sniffing
-                .contentTypeOptions()
             );
 
         return http.build();
