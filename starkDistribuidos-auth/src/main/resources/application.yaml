@@ -7,25 +7,25 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-  # ✅ SECURITY FIX: Credentials moved to environment variables
+
+  # --- SEGURIDAD CONFIGURADA CORRECTAMENTE ---
   security:
     user:
-      name: ${SECURITY_USER_NAME:admin}
-      password: ${SECURITY_USER_PASSWORD:}
+      name: admin
+      password: admin123
 
-# ✅ SECURITY FIX: Eureka client credentials from environment
 eureka:
   client:
     service-url:
-      defaultZone: http://${EUREKA_USER:admin}:${EUREKA_PASSWORD}@localhost:8761/eureka/
+      defaultZone: http://admin:admin123@127.0.0.1:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+    
 
 server:
   port: 8081
 
-# ✅ SECURITY FIX: JWT configuration from environment
 jwt:
-  secret: ${JWT_SECRET:StarkIndustriesSecuritySystemJWTSecretKeyForMicroservices2024}
-  expiration: ${JWT_EXPIRATION:86400000}
+  secret: StarkIndustriesSecuritySystemJWTSecretKeyForMicroservices2024
+  expiration: 86400000
   
