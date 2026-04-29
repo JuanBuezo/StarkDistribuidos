@@ -93,13 +93,17 @@ async function handleLogin(event) {
         loader.style.display = 'none';
 
         if (!response.ok) {
-            errorDiv.textContent = '❌ Usuario o contraseña inválidos';
+            errorDiv.textContent = 'Usuario o contraseña inválidos';
             return;
         }
 
         const data = await response.json();
 
-        localStorage.setItem('authToken', data.token || 'token_' + Date.now());
+        // Guardar credenciales para Basic Auth
+        const basicAuth = btoa(username + ':' + password);
+        localStorage.setItem('authToken', basicAuth);
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
         localStorage.setItem('currentUser', JSON.stringify({
             username: username,
             roles: ['USER']
@@ -110,7 +114,7 @@ async function handleLogin(event) {
     } catch (error) {
         submitBtn.querySelector('span:first-child').style.display = 'inline';
         loader.style.display = 'none';
-        errorDiv.textContent = '⚠️ Error de conexión: ' + error.message;
+        errorDiv.textContent = 'Error de conexión: ' + error.message;
         console.error('Login error:', error);
     }
 }
@@ -130,17 +134,17 @@ async function handleRegister(event) {
     errorDiv.textContent = '';
 
     if (password !== passwordConfirm) {
-        errorDiv.textContent = '❌ Las contraseñas no coinciden';
+        errorDiv.textContent = 'Las contraseñas no coinciden';
         return;
     }
 
     if (password.length < 8) {
-        errorDiv.textContent = '❌ La contraseña debe tener al menos 8 caracteres';
+        errorDiv.textContent = 'La contraseña debe tener al menos 8 caracteres';
         return;
     }
 
     if (!isValidEmail(email)) {
-        errorDiv.textContent = '❌ Email no válido';
+        errorDiv.textContent = 'Email no válido';
         return;
     }
 
@@ -164,17 +168,22 @@ async function handleRegister(event) {
         loader.style.display = 'none';
 
         if (!response.ok) {
-            errorDiv.textContent = '❌ Error al registrar. Código: ' + response.status;
+            errorDiv.textContent = 'Error al registrar. Código: ' + response.status;
             return;
         }
 
+        // Guardar credenciales para Basic Auth después de registro
+        const basicAuth = btoa(username + ':' + password);
+        localStorage.setItem('authToken', basicAuth);
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
         localStorage.setItem('currentUser', JSON.stringify({
             username: username,
             roles: ['USER']
         }));
 
         errorDiv.style.color = 'var(--success-color)';
-        errorDiv.textContent = '✅ Registro exitoso. Entrando al dashboard...';
+        errorDiv.textContent = 'Registro exitoso. Entrando al dashboard...';
 
         setTimeout(() => {
             goToDashboard(username);
@@ -183,13 +192,15 @@ async function handleRegister(event) {
     } catch (error) {
         submitBtn.querySelector('span:first-child').style.display = 'inline';
         loader.style.display = 'none';
-        errorDiv.textContent = '⚠️ Error en el registro: ' + error.message;
+        errorDiv.textContent = 'Error en el registro: ' + error.message;
         console.error('Register error:', error);
     }
 }
 
 function logout() {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
     localStorage.removeItem('currentUser');
 
     // Detener servicios

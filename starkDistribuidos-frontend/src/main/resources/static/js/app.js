@@ -22,14 +22,16 @@ async function apiCall(endpoint, method = 'GET', body = null) {
         'Content-Type': 'application/json',
     };
 
-    if (authToken) {
-        // Usar Basic Auth con el token guardado
-        headers['Authorization'] = 'Basic ' + authToken;
+    // Obtener el token (credenciales en Base64)
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        headers['Authorization'] = 'Basic ' + token;
     }
 
     const options = {
         method,
         headers,
+        credentials: 'include', // Incluir cookies si existen
     };
 
     if (body) {
@@ -40,13 +42,14 @@ async function apiCall(endpoint, method = 'GET', body = null) {
         const response = await fetch(API_BASE_URL + endpoint, options);
 
         if (response.status === 401) {
-            // No autorizado, volver al login
-            logout();
+            // Token inválido o expirado - mostrar login pero SIN logout automático
+            console.warn('401 Unauthorized en ' + endpoint);
             return null;
         }
 
         if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
+            console.error(`HTTP Error: ${response.status} en ${endpoint}`);
+            return null;
         }
 
         const contentType = response.headers.get('content-type');
@@ -116,8 +119,8 @@ function switchTab(tabName, event) {
     tabs.forEach(tab => tab.classList.remove('active'));
 
     // Desactivar todos los enlaces de navegación
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => link.classList.remove('active'));
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
 
     // Mostrar la pestaña seleccionada
     const selectedTab = document.getElementById(tabName + 'Tab');
@@ -216,7 +219,7 @@ function showAuthContainer() {
 function showDashboard() {
     document.getElementById('authContainer').style.display = 'none';
     document.getElementById('dashboardContainer').style.display = 'flex';
-    document.getElementById('userDisplay').textContent = '👤 ' + currentUser.username;
+    document.getElementById('userDisplay').textContent = currentUser.username;
 
     // Cargar datos iniciales
     loadDashboardData();
@@ -241,6 +244,8 @@ function logout() {
     authToken = null;
     currentUser = null;
     localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
     localStorage.removeItem('currentUser');
     disconnectWebSocket();
 

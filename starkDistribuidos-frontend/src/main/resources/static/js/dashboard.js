@@ -213,7 +213,7 @@ async function loadSensors() {
                 </div>
                 <div class="sensor-info-row">
                     <span class="sensor-info-label">Valor:</span>
-                    <span class="sensor-value">${sensor.value || '0'}</span>
+                    <span class="sensor-value">${sensor.sensorValue || '0'}</span>
                 </div>
                 <div class="sensor-info-row">
                     <span class="sensor-info-label">Última Actualización:</span>
@@ -221,7 +221,7 @@ async function loadSensors() {
                 </div>
             </div>
             <div class="sensor-status ${sensor.status === 'ACTIVE' ? 'active' : 'inactive'}">
-                ${sensor.status === 'ACTIVE' ? '🟢 Activo' : '🔴 Inactivo'}
+                ${sensor.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}
             </div>
         </div>
         `)
@@ -233,10 +233,18 @@ async function loadSensors() {
  */
 async function loadAlerts() {
     const levelFilter = document.getElementById('alertFilterLevel').value;
-    const data = await apiCall('/alerts/unacknowledged');
+    // Intentar con /alerts/unacknowledged primero, si falla usar /alerts
+    let data = await apiCall('/alerts/unacknowledged');
+    if (!data) {
+        data = await apiCall('/alerts');
+    }
+    if (!data) {
+        data = []; // Usar array vacío como fallback
+    }
+    
     const alertsTableBody = document.getElementById('alertsTableBody');
 
-    if (!data || !Array.isArray(data)) {
+    if (!Array.isArray(data)) {
         alertsTableBody.innerHTML = '<tr><td colspan="6" class="placeholder">No se pudieron cargar las alertas</td></tr>';
         return;
     }
@@ -265,7 +273,7 @@ async function loadAlerts() {
             <td>${formatDate(alert.timestamp)}</td>
             <td>
                 <button class="btn-secondary" onclick="acknowledgeAlert(${alert.id})">
-                    ✓ Reconocer
+                    Reconocer
                 </button>
             </td>
         </tr>
@@ -295,7 +303,15 @@ function filterAlerts() {
  * Carga los logs de acceso
  */
 async function loadAccessLogs() {
-    const data = await apiCall('/access/logs?page=0&size=50');
+    // Intentar diferentes endpoint patterns
+    let data = await apiCall('/access/logs?page=0&size=50');
+    if (!data) {
+        data = await apiCall('/access');
+    }
+    if (!data) {
+        data = []; // Usar array vacío como fallback
+    }
+    
     const accessLogsBody = document.getElementById('accessLogsBody');
 
     if (!data) {
@@ -317,7 +333,7 @@ async function loadAccessLogs() {
             <td>${log.sensorId || 'N/A'}</td>
             <td>
                 <span class="access-${log.granted ? 'granted' : 'denied'}">
-                    ${log.granted ? '✓ Permitido' : '✗ Denegado'}
+                    ${log.granted ? 'Permitido' : 'Denegado'}
                 </span>
             </td>
             <td>${log.ipAddress || 'N/A'}</td>
@@ -348,9 +364,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 sensorForm.reset();
                 loadSensors();
                 loadSensorStats();
-                showNotification('✓ Sensor creado exitosamente', 'success');
+                showNotification('Sensor creado exitosamente', 'success');
             } else {
-                showNotification('✗ Error al crear el sensor', 'error');
+                showNotification('Error al crear el sensor', 'error');
             }
         });
     }

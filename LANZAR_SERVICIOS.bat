@@ -1,39 +1,20 @@
 @echo off
 REM ============================================
-REM  STARK SECURITY SYSTEM - LANZAR TODO
+REM  STARK SECURITY SYSTEM - LANZAR SERVICIOS
 REM ============================================
-REM Script para compilar TODOS los modulos y lanzar servicios en paralelo
-
-setlocal enabledelayedexpansion
+REM Script para lanzar servicios ya compilados
 
 cls
 echo.
 echo ============================================
-echo  STARK SECURITY SYSTEM - COMPILANDO TODO
+echo  STARK SECURITY SYSTEM - INICIALIZANDO
 echo ============================================
-echo.
-echo Compilando con Maven (sin tests)...
 echo.
 
-REM Compilar TODO
-call .\mvnw.cmd clean package -q -DskipTests
-if %errorlevel% neq 0 (
-    echo.
-    echo ERROR: Fallo la compilacion
-    pause
-    exit /b 1
-)
-
-cls
-echo.
-echo ============================================
-echo  STARK SECURITY SYSTEM - LANZANDO TODO
-echo ============================================
-echo.
+REM Crear ventanas separadas para cada servicio en orden
 echo Iniciando servicios en ventanas paralelas...
 echo.
 
-REM Crear ventanas separadas para cada servicio
 start "Eureka - Discovery Service (8761)" cmd /k "cd /d %~dp0\starkDistribuidos-config && ..\mvnw.cmd spring-boot:run"
 timeout /t 4 /nobreak
 
@@ -63,7 +44,7 @@ echo ============================================
 echo  STARK SECURITY SYSTEM - ACTIVO
 echo ============================================
 echo.
-echo TODOS los servicios iniciados correctamente!
+echo Todos los servicios iniciados correctamente!
 echo.
 echo ACCESO A LOS SERVICIOS:
 echo   Frontend:           http://localhost:8086/
@@ -84,11 +65,7 @@ echo CREDENCIALES DE DEMO:
 echo   Usuario: admin
 echo   Contrasena: admin123
 echo.
-echo   Usuario: test
-echo   Contrasena: test123
-echo.
-echo Presiona cualquier tecla para continuar...
+echo Presiona cualquier tecla para cerrar esta ventana...
 pause
-
 
 
