@@ -22,10 +22,36 @@ public class NotificationController {
         return notificationRepository.findAll();
     }
 
+    @GetMapping("/user/{recipient}")
+    public List<Notification> getNotificationsByRecipient(@PathVariable("recipient") String recipient) {
+        return notificationRepository.findByRecipient(recipient);
+    }
+
     @PostMapping
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
         Notification saved = notificationRepository.save(notification);
         return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/{id}/read")
+    public ResponseEntity<Notification> markAsRead(@PathVariable("id") Long id) {
+        return notificationRepository.findById(id)
+                .map(notification -> {
+                    notification.setRead(true);
+                    Notification updated = notificationRepository.save(notification);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable("id") Long id) {
+        if (!notificationRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        notificationRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/test")
