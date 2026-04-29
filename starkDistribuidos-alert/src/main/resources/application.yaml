@@ -9,9 +9,12 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://admin:admin123@localhost:8761/eureka/
+      defaultZone: http://admin:admin123@eureka-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
 server:
   port: 8083
+
+
+
 

@@ -17,7 +17,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://admin:admin123@127.0.0.1:8761/eureka/
+      defaultZone: http://admin:admin123@eureka-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
     
@@ -29,3 +29,5 @@ jwt:
   secret: StarkIndustriesSecuritySystemJWTSecretKeyForMicroservices2024
   expiration: 86400000
   
+
+

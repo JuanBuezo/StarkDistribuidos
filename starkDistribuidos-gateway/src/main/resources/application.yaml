@@ -21,17 +21,21 @@ spring:
           predicates:
             - Path=/api/notifications/**
         - id: auth-service
-          uri: lb://localhost:8081
+          uri: lb://STARK-AUTH
           predicates:
             - Path=/api/auth/**
 
 eureka:
   client:
     service-url:
-      defaultZone: http://admin:admin123@localhost:8761/eureka/
+      defaultZone: http://admin:admin123@eureka-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
 
 server:
   port: 8080
+
+
+
+
 
