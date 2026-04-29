@@ -96,6 +96,21 @@ services:
     networks:
       - stark-network
 
+  frontend-service:
+    image: eclipse-temurin:17-jdk
+    container_name: stark-frontend
+    working_dir: /app
+    volumes:
+      - ./starkDistribuidos-frontend/target/stark-frontend-0.0.1-SNAPSHOT.jar:/app/frontend.jar
+    ports:
+      - "8085:8085"
+    command: java -jar frontend.jar
+    depends_on:
+      - eureka-server
+      - api-gateway
+    networks:
+      - stark-network
+
 networks:
   stark-network:
     driver: bridge

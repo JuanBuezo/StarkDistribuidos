@@ -12,6 +12,8 @@ public class CorsConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOrigin("http://localhost:8085");
+        corsConfig.addAllowedOrigin("http://127.0.0.1:8085");
         corsConfig.addAllowedOrigin("http://localhost:8086");
         corsConfig.addAllowedOrigin("http://127.0.0.1:8086");
         corsConfig.addAllowedMethod("*");
