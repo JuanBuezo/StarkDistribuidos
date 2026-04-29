@@ -16,6 +16,7 @@ Sistema completo de microservicios distribuidos con Spring Cloud.
 3. **Acceder**: 
    - Frontend: http://localhost:8080
    - Eureka: http://localhost:8761 (admin/admin123)
+4. **Parar**: `.\scripts\stop-system.ps1`
 
 ## 📁 Estructura
 
@@ -61,14 +62,43 @@ Ver carpeta `docs/` para documentación completa:
 - `QUICKSTART.md` - Guía rápida
 - `ARCHITECTURE.md` - Arquitectura del sistema
 - `DEPLOYMENT.md` - Despliegue
-- `TROUBLESHOOTING.md` - Solución de problemas
+---
 
 ## 🛠️ Scripts
 
 Todos disponibles en `scripts/`:
 - `start-system-fixed.ps1` - Inicia todo
+- `stop-system.ps1` - Detiene todo
+- `fix-permissions.ps1` - Repara permisos (si Maven falla)
 - `run-microservices.ps1` - Microservicios
 - `start-services.sh` - Linux/Mac
+
+## ⚠️ Solución de Problemas
+
+### Error de permisos en Maven
+Si ves error `Failed to delete...` al hacer `mvnw clean install`:
+```powershell
+.\scripts\fix-permissions.ps1
+.\mvnw clean install
+```
+Ver: `docs/MAVEN_PERMISSIONS_FIX.md` para más detalles.
+
+## 📮 Testing con Postman
+
+### Opción 1: Importar colección lista
+```powershell
+# Importa docs/Postman_Collection.json en Postman
+# Incluye todos los 36+ endpoints predefinidos
+```
+
+### Opción 2: Generar con IA
+```
+# Usa docs/POSTMAN_PROMPT_IA.md
+# Copia el prompt a ChatGPT/Claude
+# Genera colección personalizada
+```
+
+Ver: `docs/POSTMAN_GUIDE.md` para guía completa de testing.
 
 ---
 
