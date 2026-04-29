@@ -87,6 +87,7 @@ services:
     working_dir: /app
     volumes:
       - ./starkDistribuidos-notification/target/stark-notification-0.0.1-SNAPSHOT.jar:/app/notification.jar
+      - notification-data:/app/data
     ports:
       - "8086:8086"
     command: java -jar notification.jar
@@ -98,3 +99,6 @@ services:
 networks:
   stark-network:
     driver: bridge
+
+volumes:
+  notification-data:
