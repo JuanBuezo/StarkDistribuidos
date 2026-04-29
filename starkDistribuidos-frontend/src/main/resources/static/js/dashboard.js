@@ -372,6 +372,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const alertForm = document.getElementById('alertForm');
+
+    if (alertForm) {
+        alertForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const alert = {
+                message: document.getElementById('alertMessage').value,
+                recipient: document.getElementById('alertRecipient').value,
+                email: document.getElementById('alertEmail').value
+            };
+
+            const result = await apiCall('/alerts', 'POST', alert);
+
+            if (result) {
+                alertForm.reset();
+                document.getElementById('alertRecipient').value = 'tony';
+
+                showNotification('Alerta creada y notificación enviada', 'success');
+
+                loadAlerts();
+                loadAlertStats();
+            } else {
+                showNotification('Error al crear la alerta', 'error');
+            }
+        });
+    }
+});
+
 /**
  * Recarga periódica de datos (cada 30 segundos)
  * Solo se ejecuta cuando el usuario está logged in
@@ -395,4 +425,6 @@ function stopDashboardRefresh() {
         dashboardRefreshInterval = null;
     }
 }
+
+
 

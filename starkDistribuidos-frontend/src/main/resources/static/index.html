@@ -166,6 +166,28 @@
                         <button class="btn-secondary" onclick="loadAlerts()">Actualizar</button>
                     </div>
                 </div>
+                <div class="alert-create-card" style="margin-bottom: 24px;">
+                    <h2>Crear alerta</h2>
+
+                    <form id="alertForm" class="modal-form">
+                        <div class="form-group">
+                            <label for="alertMessage">Mensaje</label>
+                            <input type="text" id="alertMessage" required placeholder="Ej: Intrusión detectada en laboratorio">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="alertRecipient">Usuario destino</label>
+                            <input type="text" id="alertRecipient" value="tony" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="alertEmail">Email destino opcional</label>
+                            <input type="email" id="alertEmail" placeholder="correo@ejemplo.com">
+                        </div>
+
+                        <button type="submit" class="btn-primary">Crear alerta y notificación</button>
+                    </form>
+                </div>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -248,9 +270,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <script src="/stark-security/js/app.js?v=4"></script>
-    <script src="/stark-security/js/auth.js?v=4"></script>
-    <script src="/stark-security/js/dashboard.js?v=4"></script>
-    <script src="/stark-security/js/websocket.js?v=4"></script>
+    <script src="/js/app.js?v=6"></script>
+    <script src="/js/auth.js?v=6"></script>
+    <script src="/js/dashboard.js?v=6"></script>
+    <script src="/js/websocket.js?v=6"></script>
 </body>
 </html>
