@@ -28,11 +28,12 @@ public class AlertController {
         notification.put("title", "New security alert");
         notification.put("message", alert.getOrDefault("message", "Security alert generated"));
         notification.put("recipient", alert.getOrDefault("recipient", "tony"));
+        notification.put("email", alert.getOrDefault("email", ""));
         notification.put("read", false);
 
         try {
             restTemplate.postForObject(
-                    "http://stark-notification:8086/api/notifications",
+                    "http://stark-notification:8086/api/notifications/email",
                     notification,
                     Object.class
             );

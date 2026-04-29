@@ -27,6 +27,8 @@ public class Notification {
 
     private String recipient;
 
+    private String email;
+
     private boolean read;
 
     private LocalDateTime createdAt;
