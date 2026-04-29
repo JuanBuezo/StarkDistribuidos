@@ -233,48 +233,60 @@ async function loadSensors() {
  */
 async function loadAlerts() {
     const levelFilter = document.getElementById('alertFilterLevel').value;
-    // Intentar con /alerts/unacknowledged primero, si falla usar /alerts
-    let data = await apiCall('/alerts/unacknowledged');
-    if (!data) {
-        data = await apiCall('/alerts');
+
+    let data = await apiCall('/notifications');
+
+    if (!data || !Array.isArray(data)) {
+        data = [];
     }
-    if (!data) {
-        data = []; // Usar array vacío como fallback
+
+    let alerts = data.filter(n => n.type === 'ALERT');
+
+    if (levelFilter) {
+        alerts = alerts.filter(a => {
+            const message = (a.message || '').toLowerCase();
+
+            if (levelFilter === 'CRITICAL') {
+                return message.includes('intrusión') || message.includes('intrusion') || message.includes('forced');
+            }
+
+            if (levelFilter === 'WARNING') {
+                return message.includes('warning') || message.includes('alert');
+            }
+
+            if (levelFilter === 'INFO') {
+                return true;
+            }
+
+            return true;
+        });
     }
-    
+
     const alertsTableBody = document.getElementById('alertsTableBody');
 
-    if (!Array.isArray(data)) {
-        alertsTableBody.innerHTML = '<tr><td colspan="6" class="placeholder">No se pudieron cargar las alertas</td></tr>';
-        return;
-    }
-
-    let filtered = data;
-    if (levelFilter) {
-        filtered = data.filter(a => a.level === levelFilter);
-    }
-
-    if (filtered.length === 0) {
+    if (alerts.length === 0) {
         alertsTableBody.innerHTML = '<tr><td colspan="6" class="placeholder">No hay alertas</td></tr>';
         return;
     }
 
-    alertsTableBody.innerHTML = filtered
+    alertsTableBody.innerHTML = alerts
         .map(alert => `
         <tr>
             <td>#${alert.id}</td>
-            <td>${alert.sensorId || 'Sistema'}</td>
+            <td>Sistema</td>
             <td>
-                <span class="alert-level ${alert.level.toLowerCase()}">
-                    ${alert.level}
+                <span class="alert-level ${alert.read ? 'info' : 'critical'}">
+                    ${alert.read ? 'INFO' : 'CRITICAL'}
                 </span>
             </td>
             <td>${alert.message}</td>
-            <td>${formatDate(alert.timestamp)}</td>
+            <td>${formatDate(alert.createdAt)}</td>
             <td>
-                <button class="btn-secondary" onclick="acknowledgeAlert(${alert.id})">
-                    Reconocer
-                </button>
+                ${
+            alert.read
+                ? '<span>Leída</span>'
+                : `<button class="btn-secondary" onclick="markNotificationAsRead(${alert.id})">Marcar leída</button>`
+        }
             </td>
         </tr>
         `)
@@ -289,6 +301,18 @@ async function acknowledgeAlert(alertId) {
     if (result) {
         loadAlerts();
         loadAlertStats();
+    }
+}
+
+async function markNotificationAsRead(notificationId) {
+    const result = await apiCall(`/notifications/${notificationId}/read`, 'PUT');
+
+    if (result) {
+        showNotification('Alerta marcada como leída', 'success');
+        loadAlerts();
+        loadAlertStats();
+    } else {
+        showNotification('Error al marcar la alerta', 'error');
     }
 }
 
