@@ -94,3 +94,10 @@ _archived_microservices/
 # Optional old compose files
 #######################################
 docker-compose-sdd.yml
+
+#######################################
+# Local H2 databases
+#######################################
+**/data/
+*.mv.db
+*.trace.db
