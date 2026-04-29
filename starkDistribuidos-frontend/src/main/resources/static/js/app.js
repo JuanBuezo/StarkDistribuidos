@@ -2,7 +2,7 @@
 // CONFIGURACIÓN GLOBAL
 // ============================
 
-const API_BASE_URL = '/stark-security/api';
+const API_BASE_URL = 'http://localhost:8080/api';
 const AUTH_HEADER = 'Authorization';
 
 let currentUser = null;
@@ -22,14 +22,16 @@ async function apiCall(endpoint, method = 'GET', body = null) {
         'Content-Type': 'application/json',
     };
 
-    if (authToken) {
-        // Usar Basic Auth con el token guardado
-        headers['Authorization'] = 'Basic ' + authToken;
+    // Obtener el token (credenciales en Base64)
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        headers['Authorization'] = 'Basic ' + token;
     }
 
     const options = {
         method,
         headers,
+        credentials: 'include', // Incluir cookies si existen
     };
 
     if (body) {
@@ -40,13 +42,14 @@ async function apiCall(endpoint, method = 'GET', body = null) {
         const response = await fetch(API_BASE_URL + endpoint, options);
 
         if (response.status === 401) {
-            // No autorizado, volver al login
-            logout();
+            // Token inválido o expirado - mostrar login pero SIN logout automático
+            console.warn('401 Unauthorized en ' + endpoint);
             return null;
         }
 
         if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
+            console.error(`HTTP Error: ${response.status} en ${endpoint}`);
+            return null;
         }
 
         const contentType = response.headers.get('content-type');
@@ -106,16 +109,18 @@ function toggleForm(event) {
 /**
  * Cambia de pestaña en el dashboard
  */
-function switchTab(tabName) {
-    event.preventDefault();
+function switchTab(tabName, event) {
+    if (event) {
+        event.preventDefault();
+    }
 
     // Ocultar todas las pestañas
     const tabs = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => tab.classList.remove('active'));
 
     // Desactivar todos los enlaces de navegación
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => link.classList.remove('active'));
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
 
     // Mostrar la pestaña seleccionada
     const selectedTab = document.getElementById(tabName + 'Tab');
@@ -124,7 +129,9 @@ function switchTab(tabName) {
     }
 
     // Activar el enlace de navegación
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
 
     // Cargar datos según la pestaña
     if (tabName === 'sensors') {
@@ -212,11 +219,22 @@ function showAuthContainer() {
 function showDashboard() {
     document.getElementById('authContainer').style.display = 'none';
     document.getElementById('dashboardContainer').style.display = 'flex';
-    document.getElementById('userDisplay').textContent = '👤 ' + currentUser.username;
+    document.getElementById('userDisplay').textContent = currentUser.username;
 
     // Cargar datos iniciales
     loadDashboardData();
     connectWebSocket();
+
+    // Solicitar permisos y iniciar reconexión solo después de autenticarse
+    if (typeof requestNotificationPermission === 'function') {
+        requestNotificationPermission();
+    }
+    if (typeof startReconnectInterval === 'function') {
+        startReconnectInterval();
+    }
+    if (typeof startDashboardRefresh === 'function') {
+        startDashboardRefresh();
+    }
 }
 
 /**
@@ -226,8 +244,19 @@ function logout() {
     authToken = null;
     currentUser = null;
     localStorage.removeItem('authToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
     localStorage.removeItem('currentUser');
     disconnectWebSocket();
+
+    // Detener intervalos
+    if (typeof stopReconnectInterval === 'function') {
+        stopReconnectInterval();
+    }
+    if (typeof stopDashboardRefresh === 'function') {
+        stopDashboardRefresh();
+    }
+
     showAuthContainer();
     document.getElementById('loginForm').classList.add('active');
     document.getElementById('registerForm').classList.remove('active');

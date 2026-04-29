@@ -11,7 +11,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
+    open-in-view: false
 
   h2:
     console:
@@ -23,6 +24,10 @@ spring:
     port: 587
     username: ${MAIL_USERNAME:your-email@gmail.com}
     password: ${MAIL_PASSWORD:your-app-password}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
 
 eureka:
   client:

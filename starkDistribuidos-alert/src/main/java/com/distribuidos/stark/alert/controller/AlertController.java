@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/alerts")
-@CrossOrigin(origins = "*")
 public class AlertController {
 
     private final RestTemplate restTemplate = new RestTemplate();

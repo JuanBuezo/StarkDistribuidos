@@ -21,7 +21,7 @@ spring:
           predicates:
             - Path=/api/notifications/**
         - id: auth-service
-          uri: lb://STARK-AUTH
+          uri: lb://stark-auth
           predicates:
             - Path=/api/auth/**
 
@@ -34,8 +34,3 @@ eureka:
 
 server:
   port: 8080
-
-
-
-
-

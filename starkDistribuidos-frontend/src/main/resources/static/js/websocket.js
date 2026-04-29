@@ -19,7 +19,7 @@ function connectWebSocket() {
  * Manejador de conexión exitosa
  */
 function onWebSocketConnect(frame) {
-    console.log('✓ Conectado a WebSocket');
+    console.log('Conectado a WebSocket');
 
     // Suscribirse a alertas en tiempo real
     stompClient.subscribe('/topic/alerts', function (message) {
@@ -44,7 +44,7 @@ function onWebSocketConnect(frame) {
  * Manejador de errores de WebSocket
  */
 function onWebSocketError(error) {
-    console.error('✗ Error en WebSocket:', error);
+    console.error('Error en WebSocket:', error);
     // Intentar reconectar después de 5 segundos
     setTimeout(connectWebSocket, 5000);
 }
@@ -95,7 +95,7 @@ function handleRealtimeAlert(alert) {
 
     // Notificación de navegador si es crítica
     if (alert.level === 'CRITICAL' && Notification && Notification.permission === 'granted') {
-        new Notification('⚠️ Alerta Crítica', {
+        new Notification('Alerta Crítica', {
             body: alert.message,
             icon: '/stark-security/static/images/icon.png',
         });
@@ -122,7 +122,7 @@ function handleRealtimeSensorData(sensor) {
         eventItem.innerHTML = `
             <div class="event-time">${formatDate(new Date())}</div>
             <div class="event-message">
-                📡 <strong>${sensor.name}</strong>: ${sensor.value}
+                <strong>${sensor.name}</strong>: ${sensor.value}
                 <span style="color: #BDC3C7;">(${sensor.location})</span>
             </div>
         `;
@@ -153,7 +153,7 @@ function handleSystemEvent(event) {
         eventItem.innerHTML = `
             <div class="event-time">${formatDate(new Date())}</div>
             <div class="event-message">
-                🔧 <strong>Sistema</strong>: ${event.message}
+                <strong>Sistema</strong>: ${event.message}
             </div>
         `;
 
@@ -184,16 +184,24 @@ function requestNotificationPermission() {
     }
 }
 
-// Solicitar permisos de notificación al cargar
-document.addEventListener('DOMContentLoaded', function () {
-    requestNotificationPermission();
-});
-
 // Intentar reconectar si la conexión se pierde
-setInterval(() => {
-    if (currentUser && (!stompClient || !stompClient.connected)) {
-        console.log('Reconectando a WebSocket...');
-        connectWebSocket();
+let reconnectInterval = null;
+
+function startReconnectInterval() {
+    if (!reconnectInterval) {
+        reconnectInterval = setInterval(() => {
+            if (currentUser && (!stompClient || !stompClient.connected)) {
+                console.log('Reconectando a WebSocket...');
+                connectWebSocket();
+            }
+        }, 30000);
     }
-}, 30000);
+}
+
+function stopReconnectInterval() {
+    if (reconnectInterval) {
+        clearInterval(reconnectInterval);
+        reconnectInterval = null;
+    }
+}
 

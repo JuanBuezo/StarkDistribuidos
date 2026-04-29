@@ -1,197 +1,161 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stark Industries - Sistema de Seguridad</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>Stark Security System</title>
+    <link rel="stylesheet" href="/styles/style.css?v=999">
 </head>
 <body>
     <!-- Auth Container -->
-    <div id="authContainer" class="auth-container">
+    <div id="authContainer" class="auth-container" style="display: flex;">
         <div class="auth-wrapper">
             <!-- Login Form -->
             <div id="loginForm" class="form-container active">
-                <div class="logo">
-                    <h1>⚡ STARK INDUSTRIES</h1>
+                <div class="auth-header">
+                    <h1>Stark Security</h1>
                     <p>Sistema de Seguridad Distribuido</p>
                 </div>
-
-                <form id="loginFormElement" class="form">
+                <form id="loginFormElement" class="auth-form">
                     <h2>Iniciar Sesión</h2>
-
                     <div class="form-group">
                         <label for="loginUsername">Usuario</label>
-                        <input type="text" id="loginUsername" name="username" required placeholder="Ingresa tu usuario">
+                        <input type="text" id="loginUsername" required placeholder="Ingresa tu usuario">
                     </div>
-
                     <div class="form-group">
                         <label for="loginPassword">Contraseña</label>
-                        <input type="password" id="loginPassword" name="password" required placeholder="Ingresa tu contraseña">
+                        <input type="password" id="loginPassword" required placeholder="Ingresa tu contraseña">
                     </div>
-
                     <div id="loginError" class="error-message"></div>
-
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary btn-block">
                         <span>Ingresar</span>
                         <span class="loader" style="display: none;"></span>
                     </button>
-
                     <p class="form-toggle">¿No tienes cuenta? <a href="#" onclick="toggleForm(event)">Regístrate aquí</a></p>
                 </form>
-
                 <div class="demo-credentials">
                     <p><strong>Credenciales de Demo:</strong></p>
-                    <p>👤 Usuario: <code>admin</code></p>
-                    <p>🔑 Contraseña: <code>admin123</code></p>
+                    <p>Usuario: <code>admin</code></p>
+                    <p>Contraseña: <code>admin123</code></p>
                 </div>
             </div>
-
             <!-- Register Form -->
             <div id="registerForm" class="form-container">
-                <div class="logo">
-                    <h1>⚡ STARK INDUSTRIES</h1>
+                <div class="auth-header">
+                    <h1>Stark Security</h1>
                     <p>Crear Nueva Cuenta</p>
                 </div>
-
-                <form id="registerFormElement" class="form">
+                <form id="registerFormElement" class="auth-form">
                     <h2>Registrarse</h2>
-
                     <div class="form-group">
                         <label for="regUsername">Usuario</label>
-                        <input type="text" id="regUsername" name="username" required placeholder="Elige un usuario único">
+                        <input type="text" id="regUsername" required placeholder="Elige tu usuario">
                     </div>
-
                     <div class="form-group">
                         <label for="regEmail">Email</label>
-                        <input type="email" id="regEmail" name="email" required placeholder="tu@email.com">
+                        <input type="email" id="regEmail" required placeholder="tu@email.com">
                     </div>
-
                     <div class="form-group">
                         <label for="regPassword">Contraseña</label>
-                        <input type="password" id="regPassword" name="password" required placeholder="Mínimo 8 caracteres">
+                        <input type="password" id="regPassword" required placeholder="Mínimo 8 caracteres">
                     </div>
-
                     <div class="form-group">
-                        <label for="regPasswordConfirm">Confirmar Contraseña</label>
-                        <input type="password" id="regPasswordConfirm" name="passwordConfirm" required placeholder="Confirma tu contraseña">
+                        <label for="regPasswordConfirm">Confirmar</label>
+                        <input type="password" id="regPasswordConfirm" required placeholder="Confirma la contraseña">
                     </div>
-
                     <div id="registerError" class="error-message"></div>
-
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary btn-block">
                         <span>Crear Cuenta</span>
                         <span class="loader" style="display: none;"></span>
                     </button>
-
                     <p class="form-toggle">¿Ya tienes cuenta? <a href="#" onclick="toggleForm(event)">Inicia sesión aquí</a></p>
                 </form>
             </div>
         </div>
     </div>
-
     <!-- Dashboard Container -->
     <div id="dashboardContainer" class="dashboard-container" style="display: none;">
-        <!-- Navbar -->
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <h1>⚡ Stark Security Dashboard</h1>
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Stark Security</h2>
             </div>
-
-            <div class="navbar-menu">
-                <a href="#" class="nav-link" onclick="switchTab('overview')">📊 Overview</a>
-                <a href="#" class="nav-link" onclick="switchTab('sensors')">📡 Sensores</a>
-                <a href="#" class="nav-link" onclick="switchTab('alerts')">🚨 Alertas</a>
-                <a href="#" class="nav-link" onclick="switchTab('access')">🔐 Acceso</a>
-            </div>
-
-            <div class="navbar-user">
-                <span id="userDisplay">Usuario</span>
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active" onclick="switchTab('overview', event)">Overview</a>
+                <a href="#sensors" class="nav-item" onclick="switchTab('sensors', event)">Sensores</a>
+                <a href="#alerts" class="nav-item" onclick="switchTab('alerts', event)">Alertas</a>
+                <a href="#access" class="nav-item" onclick="switchTab('access', event)">Acceso</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="userDisplay">Usuario</span>
+                </div>
                 <button id="logoutBtn" class="btn-logout">Salir</button>
             </div>
-        </nav>
-
+        </aside>
         <!-- Main Content -->
-        <main class="dashboard-content">
+        <main class="main-content">
             <!-- Overview Tab -->
             <section id="overviewTab" class="tab-content active">
-                <div class="page-header">
-                    <h2>Dashboard de Telemetría</h2>
-                    <p>Estado en tiempo real del sistema Stark Industries</p>
+                <div class="content-header">
+                    <div>
+                        <h1>Dashboard</h1>
+                        <p>Estado en tiempo real del sistema</p>
+                    </div>
                 </div>
-
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">📡</div>
-                        <div class="stat-info">
-                            <h3>Sensores Activos</h3>
-                            <p id="activeSensorsCount" class="stat-value">0</p>
-                        </div>
+                        <div class="stat-label">Sensores Activos</div>
+                        <div class="stat-value" id="activeSensorsCount">0</div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="stat-icon">🚨</div>
-                        <div class="stat-info">
-                            <h3>Alertas Activas</h3>
-                            <p id="activeAlertsCount" class="stat-value warning">0</p>
-                        </div>
+                        <div class="stat-label">Alertas Activas</div>
+                        <div class="stat-value warning" id="activeAlertsCount">0</div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="stat-icon">❌</div>
-                        <div class="stat-info">
-                            <h3>Alertas Críticas</h3>
-                            <p id="criticalAlertsCount" class="stat-value critical">0</p>
-                        </div>
+                        <div class="stat-label">Alertas Críticas</div>
+                        <div class="stat-value critical" id="criticalAlertsCount">0</div>
                     </div>
-
                     <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-info">
-                            <h3>Estado Sistema</h3>
-                            <p id="systemStatus" class="stat-value">Online</p>
-                        </div>
+                        <div class="stat-label">Estado Sistema</div>
+                        <div class="stat-value online" id="systemStatus">Online</div>
                     </div>
                 </div>
-
-                <!-- Charts Grid -->
                 <div class="charts-grid">
                     <div class="chart-container">
-                        <h3>📊 Sensor Readings</h3>
+                        <h3>Lecturas de Sensores</h3>
                         <canvas id="sensorChart"></canvas>
                     </div>
-
                     <div class="chart-container">
-                        <h3>📈 Alert Trends</h3>
+                        <h3>Tendencia de Alertas</h3>
                         <canvas id="alertChart"></canvas>
                     </div>
                 </div>
-
-                <!-- Real-time Feed -->
                 <div class="realtime-section">
-                    <h3>🔴 Feed en Tiempo Real</h3>
+                    <h3>Feed en Tiempo Real</h3>
                     <div id="realtimeFeed" class="realtime-feed">
-                        <p class="placeholder">Esperando eventos en tiempo real...</p>
+                        <p class="placeholder">Esperando eventos...</p>
                     </div>
                 </div>
             </section>
-
             <!-- Sensors Tab -->
             <section id="sensorsTab" class="tab-content">
-                <div class="page-header">
-                    <h2>Gestión de Sensores</h2>
+                <div class="content-header">
+                    <div>
+                        <h1>Gestión de Sensores</h1>
+                    </div>
                     <button class="btn-primary" onclick="openSensorModal()">+ Nuevo Sensor</button>
                 </div>
-
                 <div id="sensorsGrid" class="sensors-grid">
                     <p class="placeholder">Cargando sensores...</p>
                 </div>
             </section>
-
             <!-- Alerts Tab -->
             <section id="alertsTab" class="tab-content">
-                <div class="page-header">
-                    <h2>Sistema de Alertas</h2>
+                <div class="content-header">
+                    <div>
+                        <h1>Sistema de Alertas</h1>
+                    </div>
                     <div class="filter-controls">
                         <select id="alertFilterLevel" onchange="filterAlerts()">
                             <option value="">Todos los Niveles</option>
@@ -199,11 +163,10 @@
                             <option value="WARNING">Advertencias</option>
                             <option value="INFO">Información</option>
                         </select>
-                        <button class="btn-secondary" onclick="loadAlerts()">🔄 Actualizar</button>
+                        <button class="btn-secondary" onclick="loadAlerts()">Actualizar</button>
                     </div>
                 </div>
-
-                <div id="alertsTable" class="alerts-table">
+                <div class="table-container">
                     <table>
                         <thead>
                             <tr>
@@ -216,19 +179,19 @@
                             </tr>
                         </thead>
                         <tbody id="alertsTableBody">
-                            <tr><td colspan="6" class="placeholder">Cargando alertas...</td></tr>
+                            <tr><td colspan="6" class="placeholder">Cargando...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
-
             <!-- Access Tab -->
             <section id="accessTab" class="tab-content">
-                <div class="page-header">
-                    <h2>Logs de Acceso</h2>
+                <div class="content-header">
+                    <div>
+                        <h1>Logs de Acceso</h1>
+                    </div>
                 </div>
-
-                <div id="accessLogs" class="access-logs">
+                <div class="table-container">
                     <table>
                         <thead>
                             <tr>
@@ -240,53 +203,54 @@
                             </tr>
                         </thead>
                         <tbody id="accessLogsBody">
-                            <tr><td colspan="5" class="placeholder">Cargando logs...</td></tr>
+                            <tr><td colspan="5" class="placeholder">Cargando...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
         </main>
     </div>
-
     <!-- Modal para crear sensor -->
     <div id="sensorModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeSensorModal()">&times;</span>
-            <h2>Crear Nuevo Sensor</h2>
-            <form id="sensorForm">
+            <div class="modal-header">
+                <h2>Crear Nuevo Sensor</h2>
+                <button class="modal-close" onclick="closeSensorModal()">&times;</button>
+            </div>
+            <form id="sensorForm" class="modal-form">
                 <div class="form-group">
                     <label for="sensorName">Nombre</label>
                     <input type="text" id="sensorName" required placeholder="Ej: Sensor Movimiento 1">
                 </div>
-
                 <div class="form-group">
                     <label for="sensorType">Tipo</label>
                     <select id="sensorType" required>
                         <option value="MOTION">Movimiento</option>
                         <option value="TEMPERATURE">Temperatura</option>
-                        <option value="ACCESS">Acceso</option>
+                        <option value="HUMIDITY">Humedad</option>
+                        <option value="INTRUSION">Intrusión</option>
+                        <option value="SMOKE">Humo</option>
+                        <option value="CO2">CO2</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="sensorLocation">Ubicación</label>
                     <input type="text" id="sensorLocation" required placeholder="Ej: Entrada Principal">
                 </div>
-
-                <button type="submit" class="btn-primary">Crear Sensor</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Crear Sensor</button>
+                    <button type="button" class="btn-secondary" onclick="closeSensorModal()">Cancelar</button>
+                </div>
             </form>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-
-    <script src="/stark-security/js/app.js?v=3"></script>
-    <script src="/stark-security/js/auth.js?v=3"></script>
-    <script src="/stark-security/js/dashboard.js?v=3"></script>
-    <script src="/stark-security/js/websocket.js?v=3"></script>
-    </body>
+    <script src="/stark-security/js/app.js?v=4"></script>
+    <script src="/stark-security/js/auth.js?v=4"></script>
+    <script src="/stark-security/js/dashboard.js?v=4"></script>
+    <script src="/stark-security/js/websocket.js?v=4"></script>
+</body>
 </html>
-
