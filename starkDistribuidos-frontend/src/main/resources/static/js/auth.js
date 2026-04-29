@@ -36,6 +36,17 @@ function goToDashboard(username) {
         userDisplay.textContent = username;
     }
 
+    // Iniciar servicios de WebSocket y refresh
+    if (typeof requestNotificationPermission === 'function') {
+        requestNotificationPermission();
+    }
+    if (typeof startReconnectInterval === 'function') {
+        startReconnectInterval();
+    }
+    if (typeof startDashboardRefresh === 'function') {
+        startDashboardRefresh();
+    }
+
     if (typeof switchTab === 'function') {
         switchTab('overview');
     }
@@ -180,6 +191,17 @@ async function handleRegister(event) {
 function logout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
+
+    // Detener servicios
+    if (typeof stopReconnectInterval === 'function') {
+        stopReconnectInterval();
+    }
+    if (typeof stopDashboardRefresh === 'function') {
+        stopDashboardRefresh();
+    }
+    if (typeof disconnectWebSocket === 'function') {
+        disconnectWebSocket();
+    }
 
     const dashboardContainer = document.getElementById('dashboardContainer');
     const authContainer = document.getElementById('authContainer');

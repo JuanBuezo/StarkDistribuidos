@@ -184,16 +184,24 @@ function requestNotificationPermission() {
     }
 }
 
-// Solicitar permisos de notificación al cargar
-document.addEventListener('DOMContentLoaded', function () {
-    requestNotificationPermission();
-});
-
 // Intentar reconectar si la conexión se pierde
-setInterval(() => {
-    if (currentUser && (!stompClient || !stompClient.connected)) {
-        console.log('Reconectando a WebSocket...');
-        connectWebSocket();
+let reconnectInterval = null;
+
+function startReconnectInterval() {
+    if (!reconnectInterval) {
+        reconnectInterval = setInterval(() => {
+            if (currentUser && (!stompClient || !stompClient.connected)) {
+                console.log('Reconectando a WebSocket...');
+                connectWebSocket();
+            }
+        }, 30000);
     }
-}, 30000);
+}
+
+function stopReconnectInterval() {
+    if (reconnectInterval) {
+        clearInterval(reconnectInterval);
+        reconnectInterval = null;
+    }
+}
 

@@ -358,11 +358,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /**
  * Recarga periódica de datos (cada 30 segundos)
+ * Solo se ejecuta cuando el usuario está logged in
  */
-setInterval(() => {
-    if (currentUser) {
-        loadSensorStats();
-        loadAlertStats();
+let dashboardRefreshInterval = null;
+
+function startDashboardRefresh() {
+    if (!dashboardRefreshInterval && currentUser) {
+        dashboardRefreshInterval = setInterval(() => {
+            if (currentUser) {
+                loadSensorStats();
+                loadAlertStats();
+            }
+        }, 30000);
     }
-}, 30000);
+}
+
+function stopDashboardRefresh() {
+    if (dashboardRefreshInterval) {
+        clearInterval(dashboardRefreshInterval);
+        dashboardRefreshInterval = null;
+    }
+}
 

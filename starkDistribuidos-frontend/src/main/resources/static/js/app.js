@@ -2,7 +2,7 @@
 // CONFIGURACIÓN GLOBAL
 // ============================
 
-const API_BASE_URL = '/stark-security/api';
+const API_BASE_URL = 'http://localhost:8080/api';
 const AUTH_HEADER = 'Authorization';
 
 let currentUser = null;
@@ -106,8 +106,10 @@ function toggleForm(event) {
 /**
  * Cambia de pestaña en el dashboard
  */
-function switchTab(tabName) {
-    event.preventDefault();
+function switchTab(tabName, event) {
+    if (event) {
+        event.preventDefault();
+    }
 
     // Ocultar todas las pestañas
     const tabs = document.querySelectorAll('.tab-content');
@@ -124,7 +126,9 @@ function switchTab(tabName) {
     }
 
     // Activar el enlace de navegación
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
 
     // Cargar datos según la pestaña
     if (tabName === 'sensors') {
@@ -217,6 +221,17 @@ function showDashboard() {
     // Cargar datos iniciales
     loadDashboardData();
     connectWebSocket();
+
+    // Solicitar permisos y iniciar reconexión solo después de autenticarse
+    if (typeof requestNotificationPermission === 'function') {
+        requestNotificationPermission();
+    }
+    if (typeof startReconnectInterval === 'function') {
+        startReconnectInterval();
+    }
+    if (typeof startDashboardRefresh === 'function') {
+        startDashboardRefresh();
+    }
 }
 
 /**
@@ -228,6 +243,15 @@ function logout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
     disconnectWebSocket();
+
+    // Detener intervalos
+    if (typeof stopReconnectInterval === 'function') {
+        stopReconnectInterval();
+    }
+    if (typeof stopDashboardRefresh === 'function') {
+        stopDashboardRefresh();
+    }
+
     showAuthContainer();
     document.getElementById('loginForm').classList.add('active');
     document.getElementById('registerForm').classList.remove('active');
