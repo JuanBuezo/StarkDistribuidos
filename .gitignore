@@ -1,25 +1,63 @@
-HELP.md
+#######################################
+# Maven / Java / Spring Boot
+#######################################
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+HELP.md
+*.class
+*.jar
+*.war
+*.ear
+
+#######################################
+# Maven Wrapper
+#######################################
+.mvn/wrapper/maven-wrapper.jar
+
+#######################################
+# Logs / Crash dumps
+#######################################
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+#######################################
+# Environment / Secrets
+#######################################
+.env
+.env.local
+.env.*.local
+
+#######################################
+# Spring Tool Suite (STS)
+#######################################
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+#######################################
+# IntelliJ IDEA
+#######################################
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-### NetBeans ###
+#######################################
+# VS Code
+#######################################
+.vscode/
+
+#######################################
+# NetBeans
+#######################################
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -29,5 +67,30 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+#######################################
+# OS files
+#######################################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+#######################################
+# Temporary / Backup files
+#######################################
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+#######################################
+# Project quarantine / old material
+#######################################
+Z_BASURA_E_INUTILES/
+_archived_microservices/
+
+#######################################
+# Optional old compose files
+#######################################
+docker-compose-sdd.yml
