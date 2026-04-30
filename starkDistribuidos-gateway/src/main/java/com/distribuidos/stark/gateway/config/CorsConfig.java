@@ -10,18 +10,16 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 public class CorsConfig {
 
     @Bean
-    public CorsWebFilter corsWebFilter() {
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:8085");
-        corsConfig.addAllowedOrigin("http://127.0.0.1:8085");
-        corsConfig.addAllowedOrigin("http://localhost:8086");
-        corsConfig.addAllowedOrigin("http://127.0.0.1:8086");
-        corsConfig.addAllowedMethod("*");
-        corsConfig.addAllowedHeader("*");
-        corsConfig.setAllowCredentials(true);
+    public CorsWebFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.addAllowedOrigin("http://localhost:8085"); // 👈 SOLO ESTE
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig);
+        source.registerCorsConfiguration("/**", config);
 
         return new CorsWebFilter(source);
     }

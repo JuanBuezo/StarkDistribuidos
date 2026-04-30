@@ -146,16 +146,25 @@ function switchTab(tabName, event) {
 /**
  * Muestra un mensaje de error temporal
  */
-function showNotification(message, type = 'info', duration = 3000) {
+function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
+
     notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.bottom = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '10px 20px';
+    notification.style.background = type === 'error' ? '#e74c3c' : '#2ecc71';
+    notification.style.color = 'white';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '9999';
+    notification.style.fontSize = '14px';
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
         notification.remove();
-    }, duration);
+    }, 2000);
 }
 
 /**
@@ -223,17 +232,20 @@ function showDashboard() {
 
     // Cargar datos iniciales
     loadDashboardData();
-    connectWebSocket();
+    // connectWebSocket();
 
     // Solicitar permisos y iniciar reconexión solo después de autenticarse
     if (typeof requestNotificationPermission === 'function') {
         requestNotificationPermission();
     }
-    if (typeof startReconnectInterval === 'function') {
-        startReconnectInterval();
-    }
+    // if (typeof startReconnectInterval === 'function') {
+    //     startReconnectInterval();
+    // }
     if (typeof startDashboardRefresh === 'function') {
         startDashboardRefresh();
+    }
+    if (typeof startAutoSimulation === 'function') {
+        startAutoSimulation();
     }
 }
 

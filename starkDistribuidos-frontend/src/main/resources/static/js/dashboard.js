@@ -10,6 +10,7 @@ async function loadDashboardData() {
         loadSensorStats(),
         loadAlertStats(),
         initializeCharts(),
+        loadRealtimeFeed(),
     ]);
 }
 
@@ -116,9 +117,7 @@ function initializeCharts() {
                 indexAxis: 'y',
                 plugins: {
                     legend: {
-                        labels: {
-                            color: '#ECF0F1',
-                        },
+                        display: false,
                     },
                 },
                 scales: {
@@ -234,32 +233,14 @@ async function loadSensors() {
 async function loadAlerts() {
     const levelFilter = document.getElementById('alertFilterLevel').value;
 
-    let data = await apiCall('/notifications');
+    let alerts = await apiCall('/alerts');
 
-    if (!data || !Array.isArray(data)) {
-        data = [];
+    if (!alerts || !Array.isArray(alerts)) {
+        alerts = [];
     }
 
-    let alerts = data.filter(n => n.type === 'ALERT');
-
     if (levelFilter) {
-        alerts = alerts.filter(a => {
-            const message = (a.message || '').toLowerCase();
-
-            if (levelFilter === 'CRITICAL') {
-                return message.includes('intrusión') || message.includes('intrusion') || message.includes('forced');
-            }
-
-            if (levelFilter === 'WARNING') {
-                return message.includes('warning') || message.includes('alert');
-            }
-
-            if (levelFilter === 'INFO') {
-                return true;
-            }
-
-            return true;
-        });
+        alerts = alerts.filter(a => a.level === levelFilter);
     }
 
     const alertsTableBody = document.getElementById('alertsTableBody');
@@ -270,23 +251,19 @@ async function loadAlerts() {
     }
 
     alertsTableBody.innerHTML = alerts
-        .map(alert => `
+        .map((alert, index) => `
         <tr>
-            <td>#${alert.id}</td>
+            <td>#${index + 1}</td>
             <td>Sistema</td>
             <td>
-                <span class="alert-level ${alert.read ? 'info' : 'critical'}">
-                    ${alert.read ? 'INFO' : 'CRITICAL'}
+                <span class="alert-level ${(alert.level || 'INFO').toLowerCase()}">
+                    ${alert.level || 'INFO'}
                 </span>
             </td>
-            <td>${alert.message}</td>
-            <td>${formatDate(alert.createdAt)}</td>
+            <td>${alert.message || 'Sin mensaje'}</td>
+            <td>${formatDate(alert.timestamp || new Date())}</td>
             <td>
-                ${
-            alert.read
-                ? '<span>Leída</span>'
-                : `<button class="btn-secondary" onclick="markNotificationAsRead(${alert.id})">Marcar leída</button>`
-        }
+                <span>Activa</span>
             </td>
         </tr>
         `)
@@ -327,22 +304,13 @@ function filterAlerts() {
  * Carga los logs de acceso
  */
 async function loadAccessLogs() {
-    // Intentar diferentes endpoint patterns
-    let data = await apiCall('/access/logs?page=0&size=50');
+    let data = await apiCall('/access');
+
     if (!data) {
-        data = await apiCall('/access');
+        data = [];
     }
-    if (!data) {
-        data = []; // Usar array vacío como fallback
-    }
-    
+
     const accessLogsBody = document.getElementById('accessLogsBody');
-
-    if (!data) {
-        accessLogsBody.innerHTML = '<tr><td colspan="5" class="placeholder">No se pudieron cargar los logs</td></tr>';
-        return;
-    }
-
     const logs = data.content || data;
 
     if (!Array.isArray(logs) || logs.length === 0) {
@@ -450,5 +418,71 @@ function stopDashboardRefresh() {
     }
 }
 
+async function simulateAlert() {
+    const result = await apiCall('/alerts/simulate', 'POST');
 
+    if (result) {
+        showNotification('Alerta simulada creada', 'success');
+        loadAlerts();
+        loadAlertStats();
+        loadRealtimeFeed();
+    } else {
+        showNotification('Error al simular alerta', 'error');
+    }
+}
 
+async function simulateAccess() {
+    const result = await apiCall('/access/simulate', 'POST');
+
+    if (result) {
+        showNotification('Acceso simulado creado', 'success');
+        loadAccessLogs();
+    } else {
+        showNotification('Error al simular acceso', 'error');
+    }
+}
+
+async function loadRealtimeFeed() {
+    const data = await apiCall('/alerts');
+    const feed = document.getElementById('realtimeFeed');
+
+    if (!feed) return;
+
+    if (!data || !Array.isArray(data) || data.length === 0) {
+        feed.innerHTML = '<p class="placeholder">Esperando eventos...</p>';
+        return;
+    }
+
+    const latest = data.slice(-5).reverse();
+
+    feed.innerHTML = latest.map(alert => `
+        <div class="feed-item">
+            <strong>${alert.level || 'INFO'}</strong>
+            <span>${alert.message || 'Alerta sin mensaje'}</span>
+            <small>${formatDate(alert.timestamp || new Date())}</small>
+        </div>
+    `).join('');
+}
+
+let simulationInterval = null;
+
+function startAutoSimulation() {
+    if (simulationInterval) return;
+
+    simulationInterval = setInterval(async () => {
+        await apiCall('/alerts/simulate', 'POST');
+        await apiCall('/access/simulate', 'POST');
+
+        await loadAlerts();
+        await loadAccessLogs();
+        await loadAlertStats();
+        await loadRealtimeFeed();
+    }, 10000); // cada 10 segundos
+}
+
+function stopAutoSimulation() {
+    if (simulationInterval) {
+        clearInterval(simulationInterval);
+        simulationInterval = null;
+    }
+}

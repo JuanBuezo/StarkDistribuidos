@@ -163,7 +163,13 @@
                             <option value="WARNING">Advertencias</option>
                             <option value="INFO">Información</option>
                         </select>
+
                         <button class="btn-secondary" onclick="loadAlerts()">Actualizar</button>
+
+                        <!-- NUEVO -->
+                        <button class="btn-primary" onclick="simulateAlert()">
+                            Simular alerta
+                        </button>
                     </div>
                 </div>
                 <div class="alert-create-card" style="margin-bottom: 24px;">
@@ -212,6 +218,11 @@
                     <div>
                         <h1>Logs de Acceso</h1>
                     </div>
+
+                    <!-- NUEVO -->
+                    <button class="btn-primary" onclick="simulateAccess()">
+                        Simular acceso
+                    </button>
                 </div>
                 <div class="table-container">
                     <table>
@@ -270,9 +281,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <script src="/js/app.js?v=6"></script>
-    <script src="/js/auth.js?v=6"></script>
-    <script src="/js/dashboard.js?v=6"></script>
-    <script src="/js/websocket.js?v=6"></script>
+    <<script src="/js/app.js?v=13"></script>
+    <script src="/js/auth.js?v=10"></script>
+    <script src="/js/dashboard.js?v=16"></script>
+    <!-- <script src="/js/websocket.js?v=10"></script> -->
 </body>
 </html>
