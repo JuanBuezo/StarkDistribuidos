@@ -21,6 +21,44 @@ public class AlertController {
     @Autowired
     private AlertRepository alertRepository;
 
+    // Definición de sensores disponibles para simulación
+    private static final List<Map<String, Object>> AVAILABLE_SENSORS = Arrays.asList(
+        Map.of("id", 1L, "name", "Sensor Movimiento Entrada", "type", "MOTION"),
+        Map.of("id", 2L, "name", "Sensor Intrusión Laboratorio", "type", "INTRUSION"),
+        Map.of("id", 3L, "name", "Sensor Humo Sala Servidores", "type", "SMOKE"),
+        Map.of("id", 4L, "name", "Sensor CO2 Oficina", "type", "CO2"),
+        Map.of("id", 5L, "name", "Sensor Temperatura Data Center", "type", "TEMPERATURE"),
+        Map.of("id", 6L, "name", "Sensor Humedad Almacén", "type", "HUMIDITY")
+    );
+
+    // Reglas de alertas por tipo de sensor
+    private static final Map<String, List<Map<String, Object>>> ALERT_RULES = Map.of(
+        "INTRUSION", Arrays.asList(
+            Map.of("level", "CRITICAL", "message", "Intrusión detectada en {sensorName}"),
+            Map.of("level", "WARNING", "message", "Actividad sospechosa en {sensorName}")
+        ),
+        "SMOKE", Arrays.asList(
+            Map.of("level", "CRITICAL", "message", "Alto nivel de humo detectado en {sensorName}"),
+            Map.of("level", "WARNING", "message", "Nivel de humo elevado en {sensorName}")
+        ),
+        "CO2", Arrays.asList(
+            Map.of("level", "WARNING", "message", "Nivel de CO2 alto en {sensorName}"),
+            Map.of("level", "INFO", "message", "Monitoreo de CO2 en {sensorName}")
+        ),
+        "MOTION", Arrays.asList(
+            Map.of("level", "WARNING", "message", "Movimiento detectado fuera de horario en {sensorName}"),
+            Map.of("level", "INFO", "message", "Movimiento registrado en {sensorName}")
+        ),
+        "TEMPERATURE", Arrays.asList(
+            Map.of("level", "WARNING", "message", "Temperatura elevada detectada en {sensorName}"),
+            Map.of("level", "INFO", "message", "Monitoreo de temperatura en {sensorName}")
+        ),
+        "HUMIDITY", Arrays.asList(
+            Map.of("level", "WARNING", "message", "Humedad extrema detectada en {sensorName}"),
+            Map.of("level", "INFO", "message", "Monitoreo de humedad en {sensorName}")
+        )
+    );
+
     @GetMapping
     public ResponseEntity<List<Alert>> getAllAlerts() {
         List<Alert> alerts = alertRepository.findByHiddenFalse();
@@ -41,9 +79,18 @@ public class AlertController {
         alert.recipient = (String) alertData.get("recipient");
         alert.email = (String) alertData.get("email");
 
-        Alert savedAlert = alertRepository.save(alert);
+        // Si se proporciona información del sensor, usarla
+        if (alertData.containsKey("sensorId")) {
+            alert.sensorId = Long.valueOf(alertData.get("sensorId").toString());
+        }
+        if (alertData.containsKey("sensorName")) {
+            alert.sensorName = (String) alertData.get("sensorName");
+        }
+        if (alertData.containsKey("sensorType")) {
+            alert.sensorType = (String) alertData.get("sensorType");
+        }
 
-        // Crear notificación
+        Alert savedAlert = alertRepository.save(alert);
         createNotification(savedAlert);
 
         return ResponseEntity.ok(savedAlert);
@@ -51,19 +98,29 @@ public class AlertController {
 
     @PostMapping("/simulate")
     public ResponseEntity<Alert> simulateAlert() {
-        List<String> levels = Arrays.asList("CRITICAL", "WARNING", "INFO");
-        List<String> messages = Arrays.asList(
-                "Movimiento detectado en entrada principal",
-                "Acceso sospechoso detectado",
-                "Sensor activado fuera de horario",
-                "Intento de acceso no autorizado"
-        );
+        // Seleccionar sensor aleatorio
+        Map<String, Object> sensor = AVAILABLE_SENSORS.get(random.nextInt(AVAILABLE_SENSORS.size()));
+
+        // Obtener reglas para este tipo de sensor
+        List<Map<String, Object>> sensorRules = ALERT_RULES.get(sensor.get("type"));
+        if (sensorRules == null || sensorRules.isEmpty()) {
+            // Fallback si no hay reglas definidas
+            sensorRules = Arrays.asList(Map.of("level", "INFO", "message", "Alerta general del sistema"));
+        }
+
+        // Seleccionar regla aleatoria
+        Map<String, Object> selectedRule = sensorRules.get(random.nextInt(sensorRules.size()));
 
         Alert alert = new Alert();
-        alert.message = messages.get(random.nextInt(messages.size()));
-        alert.level = levels.get(random.nextInt(levels.size()));
+        alert.level = (String) selectedRule.get("level");
+        alert.message = ((String) selectedRule.get("message")).replace("{sensorName}", (String) sensor.get("name"));
         alert.recipient = "tony";
         alert.email = "";
+
+        // Asignar información del sensor
+        alert.sensorId = (Long) sensor.get("id");
+        alert.sensorName = (String) sensor.get("name");
+        alert.sensorType = (String) sensor.get("type");
 
         Alert savedAlert = alertRepository.save(alert);
         createNotification(savedAlert);

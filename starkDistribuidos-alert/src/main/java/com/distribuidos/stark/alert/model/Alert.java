@@ -32,6 +32,16 @@ public class Alert {
     @Column(nullable = false)
     public Boolean hidden = false; // Para soft delete
 
+    // Nuevos campos para relacionar con sensores
+    @Column
+    public Long sensorId;
+
+    @Column
+    public String sensorName;
+
+    @Column
+    public String sensorType;
+
     @PrePersist
     public void prePersist() {
         if (timestamp == null) {

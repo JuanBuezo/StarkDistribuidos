@@ -144,15 +144,18 @@ function initializeCharts() {
 }
 
 /**
- * Actualiza el gráfico de sensores con datos coherentes
+ * Actualiza el gráfico de sensores con datos coherentes basados en alertas
  */
-function updateSensorChart(sensors) {
+async function updateSensorChart(sensors) {
     if (!charts.sensor) return;
 
-    // Si no hay sensores seleccionados, seleccionar los primeros 3
-    if (selectedSensors.length === 0 && sensors.length > 0) {
-        selectedSensors = sensors.slice(0, Math.min(3, sensors.length)).map(s => s.id || s.name);
-    }
+    // Obtener alertas recientes (últimas 24 horas)
+    const alerts = await apiCall('/alerts');
+    const recentAlerts = alerts ? alerts.filter(alert => {
+        const alertTime = new Date(alert.timestamp);
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // Última hora
+        return alertTime > oneHourAgo;
+    }) : [];
 
     // Generar datos coherentes por sensor
     const hours = [];
@@ -179,11 +182,31 @@ function updateSensorChart(sensors) {
         const sensorData = [];
         const seed = sensor.id || sensor.name.charCodeAt(0);
 
+        // Verificar si hay alertas recientes para este sensor
+        const sensorAlerts = recentAlerts.filter(alert =>
+            alert.sensorId === sensor.id || alert.sensorName === sensor.name
+        );
+
+        // Determinar el nivel de anomalía basado en alertas recientes
+        let anomalyLevel = 0; // 0 = normal, 1 = warning, 2 = critical
+        if (sensorAlerts.some(alert => alert.level === 'CRITICAL')) {
+            anomalyLevel = 2;
+        } else if (sensorAlerts.some(alert => alert.level === 'WARNING')) {
+            anomalyLevel = 1;
+        }
+
         // Generar datos coherentes y progresivos
-        let baseValue = 50;
+        let baseValue = getBaseValueForSensorType(sensor.type);
         for (let i = 0; i < 24; i++) {
-            // Variación gradual y coherente según tipo de sensor
-            let variation = (Math.sin((i + seed) / 3) * 20) + (Math.random() * 10);
+            // Variación normal
+            let variation = (Math.sin((i + seed) / 3) * 5) + (Math.random() * 3 - 1.5);
+
+            // Si hay anomalía, añadir pico en las últimas horas
+            if (anomalyLevel > 0 && i >= 20) { // Últimas 4 horas
+                const anomalyMultiplier = anomalyLevel === 2 ? 3 : 1.5;
+                variation += (Math.random() * 10 + 5) * anomalyMultiplier;
+            }
+
             sensorData.push(Math.max(0, Math.min(100, baseValue + variation)));
         }
 
@@ -201,6 +224,30 @@ function updateSensorChart(sensors) {
     charts.sensor.data.labels = hours;
     charts.sensor.data.datasets = datasets;
     charts.sensor.update();
+}
+
+/**
+ * Obtiene el valor base normal para cada tipo de sensor
+ */
+function getBaseValueForSensorType(sensorType) {
+    if (!sensorType) return 50;
+
+    switch (sensorType.toUpperCase()) {
+        case 'TEMPERATURE':
+            return 22; // 22°C normal
+        case 'HUMIDITY':
+            return 45; // 45% humedad normal
+        case 'MOTION':
+            return 15; // 15% actividad normal
+        case 'INTRUSION':
+            return 0; // 0% intrusión normal
+        case 'SMOKE':
+            return 5; // 5 ppm humo normal
+        case 'CO2':
+            return 400; // 400 ppm CO2 normal
+        default:
+            return 50;
+    }
 }
 
 /**
@@ -292,7 +339,7 @@ async function loadAlerts() {
         .map((alert, index) => `
         <tr>
             <td>#${index + 1}</td>
-            <td>Sistema</td>
+            <td>${alert.sensorName || alert.sensorType || 'Sistema'}</td>
             <td>
                 <span class="alert-level ${(alert.level || 'INFO').toLowerCase()}">
                     ${alert.level || 'INFO'}
@@ -740,4 +787,3 @@ async function cleanData() {
         showNotification('Error al limpiar datos', 'error');
     }
 }
-
