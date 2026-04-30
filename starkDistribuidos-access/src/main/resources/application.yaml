@@ -2,19 +2,24 @@ spring:
   application:
     name: stark-access
   datasource:
-    url: jdbc:h2:mem:accessdb
+    url: jdbc:h2:file:./data/accessdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+
 eureka:
   client:
     service-url:
       defaultZone: http://admin:admin123@eureka-server:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+
 server:
   port: 8084
-
-
-
-
