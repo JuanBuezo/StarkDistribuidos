@@ -133,14 +133,7 @@ function switchTab(tabName, event) {
         event.target.classList.add('active');
     }
 
-    // Cargar datos según la pestaña
-    if (tabName === 'sensors') {
-        loadSensors();
-    } else if (tabName === 'alerts') {
-        loadAlerts();
-    } else if (tabName === 'access') {
-        loadAccessLogs();
-    }
+    // La carga inicial y el refresco quedan centralizados en initApp().
 }
 
 /**
@@ -198,21 +191,30 @@ window.onclick = function (event) {
 }
 
 /**
- * Inicializa la aplicación
+ * Inicializa la aplicación completa
  */
-document.addEventListener('DOMContentLoaded', function () {
-    // Verificar si hay sesión guardada
-    const savedAuth = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('currentUser');
+async function initApp() {
+    try {
+        if (typeof stopAutoRefresh === 'function') {
+            stopAutoRefresh();
+        }
 
-    if (savedAuth && savedUser) {
-        authToken = savedAuth;
-        currentUser = JSON.parse(savedUser);
-        showDashboard();
-    } else {
+        // Verificar si hay sesión guardada
+        const savedAuth = localStorage.getItem('authToken');
+        const savedUser = localStorage.getItem('currentUser');
+
+        if (savedAuth && savedUser) {
+            authToken = savedAuth;
+            currentUser = JSON.parse(savedUser);
+            await showDashboard();
+        } else {
+            showAuthContainer();
+        }
+    } catch (error) {
+        console.error('Error inicializando aplicación:', error);
         showAuthContainer();
     }
-});
+}
 
 /**
  * Muestra el contenedor de autenticación
@@ -225,13 +227,17 @@ function showAuthContainer() {
 /**
  * Muestra el dashboard
  */
-function showDashboard() {
+async function showDashboard() {
     document.getElementById('authContainer').style.display = 'none';
     document.getElementById('dashboardContainer').style.display = 'flex';
     document.getElementById('userDisplay').textContent = currentUser.username;
 
-    // Cargar datos iniciales
-    loadDashboardData();
+    // Cargar todos los datos iniciales antes de activar refrescos periodicos.
+    await loadDashboardData();
+
+    // Iniciar auto-refresh
+    startAutoRefresh();
+
     // connectWebSocket();
 
     // Solicitar permisos y iniciar reconexión solo después de autenticarse
@@ -241,9 +247,6 @@ function showDashboard() {
     // if (typeof startReconnectInterval === 'function') {
     //     startReconnectInterval();
     // }
-    if (typeof startDashboardRefresh === 'function') {
-        startDashboardRefresh();
-    }
     // Demo se inicia manualmente con botón, no automáticamente
 }
 
@@ -266,6 +269,9 @@ function logout() {
     if (typeof stopDashboardRefresh === 'function') {
         stopDashboardRefresh();
     }
+    if (typeof stopAutoRefresh === 'function') {
+        stopAutoRefresh();
+    }
     if (typeof stopAutoSimulation === 'function') {
         stopAutoSimulation();
     }
@@ -281,11 +287,9 @@ function logout() {
     document.getElementById('registerFormElement').reset();
 }
 
-// Event listener para logout
+/**
+ * Inicializa la aplicación
+ */
 document.addEventListener('DOMContentLoaded', function () {
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', logout);
-    }
+    initApp();
 });
-

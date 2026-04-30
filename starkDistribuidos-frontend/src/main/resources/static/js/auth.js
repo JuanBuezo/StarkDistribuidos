@@ -19,48 +19,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function goToDashboard(username) {
-    const authContainer = document.getElementById('authContainer');
-    const dashboardContainer = document.getElementById('dashboardContainer');
-    const userDisplay = document.getElementById('userDisplay');
+async function goToDashboard(username) {
+    authToken = localStorage.getItem('authToken');
+    currentUser = {
+        username: username,
+        roles: ['USER']
+    };
 
-    if (authContainer) {
-        authContainer.style.display = 'none';
-    }
-
-    if (dashboardContainer) {
-        dashboardContainer.style.display = 'block';
-    }
-
-    if (userDisplay) {
-        userDisplay.textContent = username;
-    }
-
-    // Iniciar servicios de WebSocket y refresh
-    if (typeof requestNotificationPermission === 'function') {
-        requestNotificationPermission();
-    }
-    if (typeof startReconnectInterval === 'function') {
-        startReconnectInterval();
-    }
-    if (typeof startDashboardRefresh === 'function') {
-        startDashboardRefresh();
-    }
-
-    if (typeof switchTab === 'function') {
-        switchTab('overview');
-    }
-
-    if (typeof loadSensors === 'function') {
-        loadSensors();
-    }
-
-    if (typeof loadAlerts === 'function') {
-        loadAlerts();
-    }
-
-    if (typeof loadAccessLogs === 'function') {
-        loadAccessLogs();
+    if (typeof showDashboard === 'function') {
+        await showDashboard();
     }
 }
 
@@ -109,7 +76,7 @@ async function handleLogin(event) {
             roles: ['USER']
         }));
 
-        goToDashboard(username);
+        await goToDashboard(username);
 
     } catch (error) {
         submitBtn.querySelector('span:first-child').style.display = 'inline';
@@ -186,7 +153,9 @@ async function handleRegister(event) {
         errorDiv.textContent = 'Registro exitoso. Entrando al dashboard...';
 
         setTimeout(() => {
-            goToDashboard(username);
+            goToDashboard(username).catch(error => {
+                console.error('Error entrando al dashboard:', error);
+            });
         }, 700);
 
     } catch (error) {
@@ -198,6 +167,9 @@ async function handleRegister(event) {
 }
 
 function logout() {
+    authToken = null;
+    currentUser = null;
+
     localStorage.removeItem('authToken');
     localStorage.removeItem('username');
     localStorage.removeItem('password');
@@ -209,6 +181,15 @@ function logout() {
     }
     if (typeof stopDashboardRefresh === 'function') {
         stopDashboardRefresh();
+    }
+    if (typeof stopAutoRefresh === 'function') {
+        stopAutoRefresh();
+    }
+    if (typeof stopRealtimeFeedRefresh === 'function') {
+        stopRealtimeFeedRefresh();
+    }
+    if (typeof stopAutoSimulation === 'function') {
+        stopAutoSimulation();
     }
     if (typeof disconnectWebSocket === 'function') {
         disconnectWebSocket();
