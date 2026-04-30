@@ -102,6 +102,18 @@
                         <h1>Dashboard</h1>
                         <p>Estado en tiempo real del sistema</p>
                     </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="btn-primary" id="autoSimBtn" onclick="toggleAutoSimulation()" style="display: flex; align-items: center; gap: 6px;">
+                            <span id="autoSimIcon">▶</span>
+                            <span id="autoSimText">Iniciar Demo</span>
+                        </button>
+                        <button class="btn-secondary" onclick="generateEvent()" style="display: flex; align-items: center; gap: 6px;">
+                            <span>Generar evento</span>
+                        </button>
+                        <button class="btn-secondary" onclick="cleanData()" style="display: flex; align-items: center; gap: 6px;">
+                            <span>Limpiar datos</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -123,7 +135,11 @@
                 </div>
                 <div class="charts-grid">
                     <div class="chart-container">
-                        <h3>Lecturas de Sensores</h3>
+                        <h3>Lecturas de Sensores
+                            <span style="font-size: 12px; color: #95A5A6; font-weight: normal; display: block; margin-top: 4px;">
+                                Selecciona sensores para ver sus datos
+                            </span>
+                        </h3>
                         <canvas id="sensorChart"></canvas>
                     </div>
                     <div class="chart-container">
@@ -163,36 +179,7 @@
                             <option value="WARNING">Advertencias</option>
                             <option value="INFO">Información</option>
                         </select>
-
-                        <button class="btn-secondary" onclick="loadAlerts()">Actualizar</button>
-
-                        <!-- NUEVO -->
-                        <button class="btn-primary" onclick="simulateAlert()">
-                            Simular alerta
-                        </button>
                     </div>
-                </div>
-                <div class="alert-create-card" style="margin-bottom: 24px;">
-                    <h2>Crear alerta</h2>
-
-                    <form id="alertForm" class="modal-form">
-                        <div class="form-group">
-                            <label for="alertMessage">Mensaje</label>
-                            <input type="text" id="alertMessage" required placeholder="Ej: Intrusión detectada en laboratorio">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="alertRecipient">Usuario destino</label>
-                            <input type="text" id="alertRecipient" value="tony" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="alertEmail">Email destino opcional</label>
-                            <input type="email" id="alertEmail" placeholder="correo@ejemplo.com">
-                        </div>
-
-                        <button type="submit" class="btn-primary">Crear alerta y notificación</button>
-                    </form>
                 </div>
                 <div class="table-container">
                     <table>
@@ -218,11 +205,6 @@
                     <div>
                         <h1>Logs de Acceso</h1>
                     </div>
-
-                    <!-- NUEVO -->
-                    <button class="btn-primary" onclick="simulateAccess()">
-                        Simular acceso
-                    </button>
                 </div>
                 <div class="table-container">
                     <table>
@@ -281,9 +263,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <<script src="/js/app.js?v=13"></script>
+    <<script src="/js/app.js?v=14"></script>
     <script src="/js/auth.js?v=10"></script>
-    <script src="/js/dashboard.js?v=16"></script>
+    <script src="/js/dashboard.js?v=18"></script>
     <!-- <script src="/js/websocket.js?v=10"></script> -->
 </body>
 </html>

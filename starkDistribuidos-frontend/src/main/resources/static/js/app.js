@@ -244,9 +244,7 @@ function showDashboard() {
     if (typeof startDashboardRefresh === 'function') {
         startDashboardRefresh();
     }
-    if (typeof startAutoSimulation === 'function') {
-        startAutoSimulation();
-    }
+    // Demo se inicia manualmente con botón, no automáticamente
 }
 
 /**
@@ -267,6 +265,12 @@ function logout() {
     }
     if (typeof stopDashboardRefresh === 'function') {
         stopDashboardRefresh();
+    }
+    if (typeof stopAutoSimulation === 'function') {
+        stopAutoSimulation();
+    }
+    if (typeof stopRealtimeFeedRefresh === 'function') {
+        stopRealtimeFeedRefresh();
     }
 
     showAuthContainer();

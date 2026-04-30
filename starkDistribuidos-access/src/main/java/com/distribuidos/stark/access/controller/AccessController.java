@@ -43,4 +43,10 @@ public class AccessController {
 
         return ResponseEntity.ok(log);
     }
+
+    @DeleteMapping
+    public ResponseEntity<?> clearAccessLogs() {
+        accessLogs.clear();
+        return ResponseEntity.ok().build();
+    }
 }

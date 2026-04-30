@@ -6,12 +6,16 @@
  * Carga los datos iniciales del dashboard
  */
 async function loadDashboardData() {
-    await Promise.all([
-        loadSensorStats(),
-        loadAlertStats(),
-        initializeCharts(),
-        loadRealtimeFeed(),
-    ]);
+    await initializeCharts();
+
+    await loadSensorStats();
+    await loadAlertStats();
+    await loadRealtimeFeed();
+
+    await loadAlerts();
+    await loadAccessLogs();
+
+    startRealtimeFeedRefresh();
 }
 
 /**
@@ -45,7 +49,12 @@ async function loadAlertStats() {
 /**
  * Inicializa los gráficos
  */
+let selectedSensors = [];
+
 function initializeCharts() {
+    // Crear selector de sensores primero
+    createSensorSelector();
+
     // Gráfico de sensores
     const sensorCtx = document.getElementById('sensorChart');
     if (sensorCtx) {
@@ -53,16 +62,7 @@ function initializeCharts() {
             type: 'line',
             data: {
                 labels: [],
-                datasets: [
-                    {
-                        label: 'Sensores Activos',
-                        data: [],
-                        borderColor: '#FF6B35',
-                        backgroundColor: 'rgba(255, 107, 53, 0.1)',
-                        tension: 0.3,
-                        fill: true,
-                    },
-                ],
+                datasets: [],
             },
             options: {
                 responsive: true,
@@ -144,24 +144,62 @@ function initializeCharts() {
 }
 
 /**
- * Actualiza el gráfico de sensores
+ * Actualiza el gráfico de sensores con datos coherentes
  */
 function updateSensorChart(sensors) {
     if (!charts.sensor) return;
 
-    const hours = [];
-    const sensorCounts = [];
+    // Si no hay sensores seleccionados, seleccionar los primeros 3
+    if (selectedSensors.length === 0 && sensors.length > 0) {
+        selectedSensors = sensors.slice(0, Math.min(3, sensors.length)).map(s => s.id || s.name);
+    }
 
+    // Generar datos coherentes por sensor
+    const hours = [];
     for (let i = 23; i >= 0; i--) {
         const hour = new Date();
         hour.setHours(hour.getHours() - i);
         hours.push(hour.getHours() + ':00');
-        // Simular datos
-        sensorCounts.push(Math.floor(Math.random() * sensors.length) + 1);
     }
 
+    const datasets = [];
+    const colors = [
+        { border: '#FF6B35', bg: 'rgba(255, 107, 53, 0.1)' },
+        { border: '#3498DB', bg: 'rgba(52, 152, 219, 0.1)' },
+        { border: '#2ECC71', bg: 'rgba(46, 204, 113, 0.1)' },
+        { border: '#F39C12', bg: 'rgba(243, 156, 18, 0.1)' },
+        { border: '#E74C3C', bg: 'rgba(231, 76, 60, 0.1)' },
+    ];
+
+    // Crear datasets para cada sensor seleccionado
+    selectedSensors.forEach((sensorId, index) => {
+        const sensor = sensors.find(s => s.id === sensorId || s.name === sensorId);
+        if (!sensor) return;
+
+        const sensorData = [];
+        const seed = sensor.id || sensor.name.charCodeAt(0);
+
+        // Generar datos coherentes y progresivos
+        let baseValue = 50;
+        for (let i = 0; i < 24; i++) {
+            // Variación gradual y coherente según tipo de sensor
+            let variation = (Math.sin((i + seed) / 3) * 20) + (Math.random() * 10);
+            sensorData.push(Math.max(0, Math.min(100, baseValue + variation)));
+        }
+
+        const color = colors[index % colors.length];
+        datasets.push({
+            label: sensor.name || sensor.type,
+            data: sensorData,
+            borderColor: color.border,
+            backgroundColor: color.bg,
+            tension: 0.3,
+            fill: true,
+        });
+    });
+
     charts.sensor.data.labels = hours;
-    charts.sensor.data.datasets[0].data = sensorCounts;
+    charts.sensor.data.datasets = datasets;
     charts.sensor.update();
 }
 
@@ -453,21 +491,52 @@ async function loadRealtimeFeed() {
         return;
     }
 
-    const latest = data.slice(-5).reverse();
+    const latest = data.slice(-10).reverse();
 
-    feed.innerHTML = latest.map(alert => `
-        <div class="feed-item">
-            <strong>${alert.level || 'INFO'}</strong>
-            <span>${alert.message || 'Alerta sin mensaje'}</span>
-            <small>${formatDate(alert.timestamp || new Date())}</small>
-        </div>
-    `).join('');
+    feed.innerHTML = latest.map((alert, idx) => {
+        const levelClass = (alert.level || 'INFO').toLowerCase();
+        const levelColor = levelClass === 'critical' ? '#E74C3C' : levelClass === 'warning' ? '#F39C12' : '#3498DB';
+
+        return `
+            <div class="feed-item" style="
+                padding: 10px 12px;
+                border-left: 3px solid ${levelColor};
+                background: rgba(0,0,0,0.2);
+                border-radius: 4px;
+                margin-bottom: 8px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            ">
+                <div style="flex: 1;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span style="
+                            background: ${levelColor};
+                            color: white;
+                            padding: 2px 8px;
+                            border-radius: 3px;
+                            font-size: 11px;
+                            font-weight: bold;
+                            min-width: 60px;
+                            text-align: center;
+                        ">${alert.level || 'INFO'}</span>
+                        <span style="color: #ECF0F1; font-size: 13px; flex: 1;">${alert.message || 'Alerta sin mensaje'}</span>
+                    </div>
+                    <small style="color: #95A5A6; font-size: 11px; margin-top: 4px; display: block;">${formatDate(alert.timestamp || new Date())}</small>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 let simulationInterval = null;
+let isAutoSimulationActive = false;
 
 function startAutoSimulation() {
     if (simulationInterval) return;
+
+    isAutoSimulationActive = true;
+    updateAutoSimBtn();
 
     simulationInterval = setInterval(async () => {
         await apiCall('/alerts/simulate', 'POST');
@@ -477,7 +546,7 @@ function startAutoSimulation() {
         await loadAccessLogs();
         await loadAlertStats();
         await loadRealtimeFeed();
-    }, 10000); // cada 10 segundos
+    }, 3000);
 }
 
 function stopAutoSimulation() {
@@ -485,4 +554,190 @@ function stopAutoSimulation() {
         clearInterval(simulationInterval);
         simulationInterval = null;
     }
+    isAutoSimulationActive = false;
+    updateAutoSimBtn();
 }
+
+/**
+ * Alterna la simulación automática
+ */
+function toggleAutoSimulation() {
+    if (isAutoSimulationActive) {
+        stopAutoSimulation();
+    } else {
+        startAutoSimulation();
+    }
+}
+
+/**
+ * Actualiza el estado visual del botón de simulación
+ */
+function updateAutoSimBtn() {
+    const btn = document.getElementById('autoSimBtn');
+    const icon = document.getElementById('autoSimIcon');
+    const text = document.getElementById('autoSimText');
+
+    if (!btn) return;
+
+    if (isAutoSimulationActive) {
+        btn.style.background = '#E74C3C';
+        btn.style.borderColor = '#C0392B';
+        icon.textContent = '⏸';
+        text.textContent = 'Detener Demo';
+    } else {
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        icon.textContent = '▶';
+        text.textContent = 'Iniciar Demo';
+    }
+}
+
+// ============================
+// MEJORAS: SELECTOR DE SENSORES
+// ============================
+
+/**
+ * Crea el selector de sensores en la gráfica
+ */
+async function createSensorSelector() {
+    const sensors = await apiCall('/sensors');
+    if (!sensors || !Array.isArray(sensors) || sensors.length === 0) {
+        return;
+    }
+
+    // Buscar el contenedor de la gráfica
+    const chartContainer = document.querySelector('.chart-container');
+    if (!chartContainer) return;
+
+    // Crear selector si no existe
+    let selector = chartContainer.querySelector('#sensorSelector');
+    if (!selector) {
+        selector = document.createElement('div');
+        selector.id = 'sensorSelector';
+        selector.style.marginBottom = '12px';
+        selector.style.display = 'flex';
+        selector.style.gap = '8px';
+        selector.style.flexWrap = 'wrap';
+        chartContainer.insertBefore(selector, chartContainer.firstChild);
+    }
+
+    selector.innerHTML = '';
+    sensors.forEach(sensor => {
+        const btn = document.createElement('button');
+        btn.className = 'sensor-btn';
+        btn.textContent = sensor.name || sensor.type;
+        btn.style.padding = '6px 12px';
+        btn.style.border = '1px solid #3498DB';
+        btn.style.borderRadius = '4px';
+        btn.style.background = '#2C3E50';
+        btn.style.color = '#ECF0F1';
+        btn.style.cursor = 'pointer';
+        btn.style.fontSize = '12px';
+        btn.style.transition = 'all 0.3s';
+
+        const sensorId = sensor.id || sensor.name;
+        const isSelected = selectedSensors.includes(sensorId);
+        if (isSelected) {
+            btn.style.background = '#3498DB';
+            btn.style.color = 'white';
+            btn.style.fontWeight = 'bold';
+        }
+
+        btn.onclick = () => toggleSensorSelection(sensorId, sensors);
+        selector.appendChild(btn);
+    });
+}
+
+/**
+ * Alterna la selección de un sensor
+ */
+function toggleSensorSelection(sensorId, sensors) {
+    const index = selectedSensors.indexOf(sensorId);
+    if (index > -1) {
+        selectedSensors.splice(index, 1);
+    } else {
+        selectedSensors.push(sensorId);
+    }
+
+    // Actualizar gráfica
+    updateSensorChart(sensors);
+
+    // Recrear selector para mostrar estado
+    createSensorSelector();
+}
+
+// ============================
+// MEJORAS: FEED EN TIEMPO REAL
+// ============================
+
+let realtimeFeedInterval = null;
+
+/**
+ * Inicia actualización automática del feed cada 10 segundos
+ */
+function startRealtimeFeedRefresh() {
+    if (realtimeFeedInterval) return;
+
+    realtimeFeedInterval = setInterval(() => {
+        loadRealtimeFeed();
+    }, 10000); // cada 10 segundos
+}
+
+/**
+ * Detiene la actualización del feed
+ */
+function stopRealtimeFeedRefresh() {
+    if (realtimeFeedInterval) {
+        clearInterval(realtimeFeedInterval);
+        realtimeFeedInterval = null;
+    }
+}
+
+/**
+ * Genera un evento único (simula alerta y acceso)
+ */
+async function generateEvent() {
+    try {
+        await apiCall('/alerts/simulate', 'POST');
+        await apiCall('/access/simulate', 'POST');
+
+        // Actualizar todas las vistas
+        await loadAlerts();
+        await loadAccessLogs();
+        await loadAlertStats();
+        await loadRealtimeFeed();
+
+        showNotification('Evento generado exitosamente', 'success');
+    } catch (error) {
+        console.error('Error al generar evento:', error);
+        showNotification('Error al generar evento', 'error');
+    }
+}
+
+/**
+ * Limpia todos los datos de alertas y accesos
+ */
+async function cleanData() {
+    // Confirmación antes de borrar
+    if (!confirm('¿Seguro que quieres limpiar alertas y accesos? Esta acción no se puede deshacer.')) {
+        return;
+    }
+
+    try {
+        // Limpiar alertas y accesos llamando a DELETE
+        await apiCall('/alerts', 'DELETE');
+        await apiCall('/access', 'DELETE');
+
+        // Actualizar todas las vistas
+        await loadAlerts();
+        await loadAccessLogs();
+        await loadAlertStats();
+        await loadRealtimeFeed();
+
+        showNotification('Datos limpios exitosamente', 'success');
+    } catch (error) {
+        console.error('Error al limpiar datos:', error);
+        showNotification('Error al limpiar datos', 'error');
+    }
+}
+

@@ -71,6 +71,12 @@ public class AlertController {
         return ResponseEntity.ok(alert);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> clearAlerts() {
+        alerts.clear();
+        return ResponseEntity.ok().build();
+    }
+
     private void createNotification(Map<String, Object> alert) {
         Map<String, Object> notification = new HashMap<>();
         notification.put("type", "ALERT");
